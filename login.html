@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body style="background:#0f172a;color:white;text-align:center;padding:50px;">
+
+<h2>Login</h2>
+
+<input id="user" placeholder="Username"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
+
+<button onclick="login()">Enter</button>
+
+<script>
+function login(){
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  if(u==="person1" && p==="1234"){
+    localStorage.setItem("user","Person1");
+    window.location.href="home.html";
+  } 
+  else if(u==="person2" && p==="1234"){
+    localStorage.setItem("user","Person2");
+    window.location.href="home.html";
+  } 
+  else {
+    alert("Wrong login");
+  }
+}
+</script>
+
+</body>
+</html>
