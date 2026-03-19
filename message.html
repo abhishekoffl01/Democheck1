@@ -8,13 +8,12 @@
 
 <h2>Message Room</h2>
 
-<h3>PostBox (Latest Message)</h3>
+<h3>PostBox</h3>
 <div id="latest" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
 No message yet
 </div>
 
-<h3>Write Message</h3>
-<textarea id="msg" placeholder="Write something..." style="width:100%;height:80px;"></textarea><br><br>
+<textarea id="msg" placeholder="Write message..." style="width:100%;height:80px;"></textarea><br><br>
 
 <button onclick="sendMessage()">Send</button>
 
@@ -24,65 +23,60 @@ No messages yet
 </div>
 
 <br>
-<button onclick="goBack()">Back</button>
+<button onclick="window.location.href='home.html'">Back</button>
 
 <script>
 let user = localStorage.getItem("user");
 
-// Load all messages
+// Load messages
 function loadMessages(){
-  let data = localStorage.getItem("allMessages");
+  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
 
-  if(data){
-    let messages = JSON.parse(data);
+  let historyDiv = document.getElementById("history");
+  let latestDiv = document.getElementById("latest");
 
-    let historyHTML = "";
-
-    messages.forEach(msg => {
-      historyHTML += 
-        "<div style='margin-bottom:10px;padding:10px;background:#334155;border-radius:8px;'>" +
-        "<b>" + msg.sender + "</b><br>" +
-        msg.text + "<br>" +
-        "<small>" + msg.time + "</small>" +
-        "</div>";
-    });
-
-    document.getElementById("history").innerHTML = historyHTML;
-
-    // show latest
-    let last = messages[messages.length - 1];
-    document.getElementById("latest").innerHTML =
-      "<b>" + last.sender + "</b><br>" +
-      last.text + "<br><small>" + last.time + "</small>";
+  if(messages.length === 0){
+    historyDiv.innerHTML = "No messages yet";
+    latestDiv.innerHTML = "No message yet";
+    return;
   }
+
+  let html = "";
+
+  messages.forEach(m => {
+    html += "<div style='margin-bottom:10px;padding:10px;background:#334155;border-radius:8px'>" +
+            "<b>" + m.sender + "</b><br>" +
+            m.text + "<br>" +
+            "<small>" + m.time + "</small>" +
+            "</div>";
+  });
+
+  historyDiv.innerHTML = html;
+
+  let last = messages[messages.length - 1];
+  latestDiv.innerHTML =
+    "<b>" + last.sender + "</b><br>" +
+    last.text + "<br><small>" + last.time + "</small>";
 }
 
 // Send message
 function sendMessage(){
-  let text = document.getElementById("msg").value;
+  let text = document.getElementById("msg").value.trim();
+  if(text === "") return;
 
-  if(text.trim() === "") return;
+  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
 
-  let message = {
+  messages.push({
     sender: user,
     text: text,
     time: new Date().toLocaleString()
-  };
-
-  let data = localStorage.getItem("allMessages");
-  let messages = data ? JSON.parse(data) : [];
-
-  messages.push(message);
+  });
 
   localStorage.setItem("allMessages", JSON.stringify(messages));
 
   document.getElementById("msg").value = "";
 
   loadMessages();
-}
-
-function goBack(){
-  window.location.href="home.html";
 }
 
 loadMessages();
