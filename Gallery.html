@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Gallery · Our World</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#160808;--surface:#1e0d0d;--surface2:#261010;--blush:#e8b4b8;--rose:#c97b84;--cream:#f5ede4;--text:#f0e4dc;--muted:#8a6a68;--border:rgba(232,180,184,0.15);--glow:rgba(201,123,132,0.13);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-warm{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 110%,rgba(100,30,30,.5) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 0% 0%,rgba(60,18,18,.3) 0%,transparent 55%);}
+.page{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:22px 52px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-heart{font-size:18px;animation:heartbeat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 7px rgba(200,100,100,.4));}
+@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.18);}28%{transform:scale(1);}42%{transform:scale(1.1);}56%{transform:scale(1);}}
+.brand-name{font-family:'Dancing Script',cursive;font-size:20px;color:var(--blush);opacity:.8;}
+.back-btn{font-size:11px;letter-spacing:.12em;color:var(--muted);background:transparent;border:1px solid rgba(138,106,104,.3);border-radius:2px;padding:7px 16px;cursor:pointer;transition:all .25s;text-transform:uppercase;font-family:'Lato',sans-serif;}
+.back-btn:hover{color:var(--blush);border-color:var(--border);}
+
+/* HERO */
+.hero{padding:48px 52px 24px;animation:fadeUp .8s ease .1s both;}
+.hero-pre{font-family:'Dancing Script',cursive;font-size:17px;color:var(--rose);opacity:.6;margin-bottom:6px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;color:var(--cream);margin-bottom:8px;line-height:1.1;}
+.hero-title em{font-style:italic;color:var(--blush);}
+.hero-sub{font-size:13px;font-style:italic;color:var(--muted);letter-spacing:.04em;line-height:1.65;}
+
+/* UPLOAD ZONE */
+.upload-zone{margin:24px 52px 0;padding:32px;border:1.5px dashed rgba(201,123,132,.3);border-radius:4px;text-align:center;cursor:pointer;transition:all .3s;background:rgba(201,123,132,.04);animation:fadeUp .8s ease .18s both;position:relative;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--rose);background:rgba(201,123,132,.09);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:32px;margin-bottom:10px;opacity:.5;}
+.upload-title{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--blush);margin-bottom:6px;}
+.upload-sub{font-size:12px;color:var(--muted);letter-spacing:.06em;}
+
+/* TOOLBAR */
+.toolbar{padding:20px 52px 16px;display:flex;align-items:center;gap:12px;animation:fadeUp .8s ease .24s both;}
+.filter-btn{font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:all .25s;font-family:'Lato',sans-serif;}
+.filter-btn.active,.filter-btn:hover{color:var(--blush);border-color:rgba(201,123,132,.35);background:rgba(201,123,132,.07);}
+.item-count{margin-left:auto;font-family:'Dancing Script',cursive;font-size:15px;color:var(--muted);}
+
+/* GALLERY GRID */
+.gallery-scroll{flex:1;overflow-y:auto;padding:0 52px 52px;scrollbar-width:thin;scrollbar-color:rgba(201,123,132,.15) transparent;}
+.gallery-scroll::-webkit-scrollbar{width:4px;}
+.gallery-scroll::-webkit-scrollbar-thumb{background:rgba(201,123,132,.15);border-radius:2px;}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;}
+
+.empty{padding:60px 0;text-align:center;}
+.empty-icon{font-size:44px;display:block;margin-bottom:16px;opacity:.3;}
+.empty-text{font-family:'Dancing Script',cursive;font-size:18px;color:var(--muted);line-height:1.7;}
+
+/* GALLERY ITEM */
+.gitem{position:relative;border-radius:3px;overflow:hidden;background:var(--surface);border:1px solid var(--border);cursor:pointer;animation:fadeIn .5s ease both;group:true;}
+.gitem:hover .gitem-overlay{opacity:1;}
+.gitem:hover .gitem-media{transform:scale(1.04);}
+.gitem-media-wrap{aspect-ratio:1;overflow:hidden;}
+.gitem-media{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.gitem-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(22,8,8,.85) 0%,transparent 50%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
+.gitem-name{font-family:'Dancing Script',cursive;font-size:14px;color:var(--cream);margin-bottom:4px;}
+.gitem-date{font-size:10px;color:var(--muted);letter-spacing:.06em;}
+.gitem-del{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(22,8,8,.7);border:1px solid rgba(232,180,184,.2);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;opacity:0;}
+.gitem:hover .gitem-del{opacity:1;}
+.gitem-del:hover{background:rgba(180,50,50,.6);color:white;}
+
+/* Video badge */
+.vid-badge{position:absolute;top:10px;left:10px;background:rgba(22,8,8,.7);border:1px solid rgba(232,180,184,.2);border-radius:12px;padding:3px 8px;font-size:10px;color:var(--blush);letter-spacing:.06em;}
+
+@keyframes fadeIn{from{opacity:0;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(10,3,3,.95);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.lightbox.open{display:flex;}
+.lightbox-close{position:absolute;top:24px;right:28px;font-size:28px;color:var(--muted);cursor:pointer;transition:color .2s;background:none;border:none;line-height:1;}
+.lightbox-close:hover{color:var(--blush);}
+.lightbox-img{max-width:90vw;max-height:80vh;border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.lightbox-vid{max-width:90vw;max-height:80vh;border-radius:2px;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.lightbox-caption{font-family:'Dancing Script',cursive;font-size:18px;color:var(--blush);opacity:.7;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(22,8,8,.95);border:1px solid rgba(201,123,132,.22);border-radius:2px;padding:10px 28px;font-family:'Dancing Script',cursive;font-size:15px;color:var(--blush);opacity:0;transition:all .3s ease;z-index:300;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="bg-warm"></div>
+<div class="page">
+
+<header class="header">
+  <div class="brand"><span class="brand-heart">🌹</span><span class="brand-name">Our Gallery</span></div>
+  <button class="back-btn" onclick="window.location.href='home.html'">← Home</button>
+</header>
+
+<div class="hero">
+  <div class="hero-pre">every moment, captured</div>
+  <div class="hero-title">Our <em>Gallery</em></div>
+  <p class="hero-sub">A quiet place for photos and videos — every memory worth keeping.</p>
+</div>
+
+<div class="upload-zone" id="drop-zone">
+  <input type="file" id="file-input" multiple accept="image/*,video/*" onchange="handleFiles(this.files)">
+  <div class="upload-icon">🌸</div>
+  <div class="upload-title">Add photos or videos</div>
+  <div class="upload-sub">click to choose · or drag & drop here</div>
+</div>
+
+<div class="toolbar">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter('image',this)">Photos</button>
+  <button class="filter-btn" onclick="setFilter('video',this)">Videos</button>
+  <span class="item-count" id="item-count">0 memories</span>
+</div>
+
+<div class="gallery-scroll">
+  <div class="gallery-grid" id="gallery"></div>
+</div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLB(event)">
+  <button class="lightbox-close" onclick="closeLB()">×</button>
+  <img class="lightbox-img" id="lb-img" style="display:none" src="" alt="">
+  <video class="lightbox-vid" id="lb-vid" controls style="display:none" src=""></video>
+  <div class="lightbox-caption" id="lb-cap"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Petals
+(function(){const c=document.getElementById('c'),ctx=c.getContext('2d');let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}resize();window.addEventListener('resize',resize);const S=['❤','♥','·','·','✿','·'],ps=[];for(let i=0;i<40;i++)ps.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight+window.innerHeight,sym:S[Math.floor(Math.random()*S.length)],size:Math.random()*8+4,speed:Math.random()*.4+.15,drift:(Math.random()-.5)*.3,alpha:Math.random()*.16+.04,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.01,phase:Math.random()*Math.PI*2,sway:Math.random()*.5+.2});let t=0;function draw(){ctx.clearRect(0,0,W,H);t+=.01;for(const p of ps){p.y-=p.speed;p.x+=Math.sin(t*p.sway+p.phase)*p.drift;p.rot+=p.rotSpeed;if(p.y<-30){p.y=H+20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font=p.size+'px serif';ctx.fillStyle=(p.sym==='·'||p.sym==='✿')?'rgba(240,215,205,1)':'rgba(210,120,130,1)';ctx.textAlign='center';ctx.fillText(p.sym,0,0);ctx.restore();}requestAnimationFrame(draw);}draw();})();
+
+const user=localStorage.getItem('user');
+if(!user)window.location.href='index.html';
+
+// Drag & drop
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+
+let currentFilter='all';
+
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// Storage: store as base64 in localStorage
+// Key: 'gallery_items' => array of {id, name, type, data, date, uploader}
+function getItems(){return JSON.parse(localStorage.getItem('gallery_items'))||[];}
+function saveItems(items){localStorage.setItem('gallery_items',JSON.stringify(items));}
+
+function handleFiles(files){
+  const arr=Array.from(files);
+  if(!arr.length)return;
+  let loaded=0;
+  arr.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const items=getItems();
+      items.push({
+        id:Date.now()+'_'+Math.random().toString(36).slice(2),
+        name:file.name,
+        type:file.type.startsWith('video')?'video':'image',
+        data:e.target.result,
+        date:new Date().toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}),
+        uploader:user
+      });
+      saveItems(items);
+      loaded++;
+      if(loaded===arr.length){render();showToast('Added '+loaded+' memory'+(loaded>1?'ies ♥':' ♥'));}
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function render(){
+  const items=getItems();
+  const grid=document.getElementById('gallery');
+  let filtered=items;
+  if(currentFilter==='image')filtered=items.filter(i=>i.type==='image');
+  if(currentFilter==='video')filtered=items.filter(i=>i.type==='video');
+  document.getElementById('item-count').textContent=filtered.length+' memor'+(filtered.length===1?'y':'ies');
+  if(filtered.length===0){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><span class="empty-icon">🖼️</span><div class="empty-text">No memories yet.<br>Add your first photo or video.</div></div>';
+    return;
+  }
+  grid.innerHTML=filtered.map((item,i)=>`
+    <div class="gitem" style="animation-delay:${Math.min(i*.05,.4)}s">
+      ${item.type==='video'?'<div class="vid-badge">▶ video</div>':''}
+      <div class="gitem-media-wrap" onclick="openLB('${item.id}')">
+        ${item.type==='video'
+          ?`<video class="gitem-media" src="${item.data}" muted></video>`
+          :`<img class="gitem-media" src="${item.data}" alt="${esc(item.name)}" loading="lazy">`}
+      </div>
+      <div class="gitem-overlay" onclick="openLB('${item.id}')">
+        <div class="gitem-name">${esc(item.name.replace(/\.[^.]+$/,''))}</div>
+        <div class="gitem-date">${item.date} · ${item.uploader}</div>
+      </div>
+      <div class="gitem-del" onclick="delItem('${item.id}',event)">×</div>
+    </div>
+  `).join('');
+}
+
+function openLB(id){
+  const items=getItems();
+  const item=items.find(i=>i.id===id);if(!item)return;
+  const lb=document.getElementById('lightbox');
+  const img=document.getElementById('lb-img');
+  const vid=document.getElementById('lb-vid');
+  const cap=document.getElementById('lb-cap');
+  if(item.type==='video'){img.style.display='none';vid.style.display='block';vid.src=item.data;}
+  else{vid.style.display='none';img.style.display='block';img.src=item.data;}
+  cap.textContent=item.name.replace(/\.[^.]+$/,'')+' · '+item.date;
+  lb.classList.add('open');
+}
+function closeLB(e){
+  if(e&&e.target!==document.getElementById('lightbox')&&!e.target.classList.contains('lightbox-close'))return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-vid').pause();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lightbox').classList.remove('open');});
+
+function delItem(id,e){
+  e.stopPropagation();
+  if(!confirm('Remove this memory?'))return;
+  const items=getItems().filter(i=>i.id!==id);
+  saveItems(items);render();showToast('Removed ♥');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+render();
+</script>
+</body>
+</html>
