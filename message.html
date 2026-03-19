@@ -16,6 +16,9 @@ No message yet
 
 <button onclick="sendMessage()">Send</button>
 
+<br><br>
+<button onclick="goBack()">Back</button>
+
 <script>
 let user = localStorage.getItem("user");
 
@@ -44,6 +47,10 @@ function loadMessage(){
       "<b>" + msg.sender + "</b><br>" +
       msg.text + "<br><small>" + msg.time + "</small>";
   }
+}
+
+function goBack(){
+  window.location.href="home.html";
 }
 
 loadMessage();
