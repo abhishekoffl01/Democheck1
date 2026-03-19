@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Our World</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#160808; --surface:#1e0d0d; --surface2:#26100f;
+  --blush:#e8b4b8; --rose:#c97b84; --deep-rose:#8b3a42;
+  --cream:#f5ede4; --cream2:#ede0d4;
+  --text:#f0e4dc; --muted:#8a6a68; --border:rgba(232,180,184,0.15);
+  --glow:rgba(201,123,132,0.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-warm{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 70% at 50% 100%,rgba(120,40,30,0.6) 0%,transparent 65%),
+    radial-gradient(ellipse 80% 40% at 20% 0%,rgba(80,20,20,0.4) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%,rgba(60,15,25,0.35) 0%,transparent 55%);}
+.candle-glow{position:fixed;bottom:-60px;left:50%;transform:translateX(-50%);width:500px;height:300px;
+  background:radial-gradient(ellipse,rgba(255,140,60,0.12) 0%,rgba(200,80,30,0.06) 40%,transparent 70%);
+  border-radius:50%;animation:flicker 3s ease-in-out infinite alternate;z-index:0;pointer-events:none;}
+@keyframes flicker{0%{transform:translateX(-50%) scale(1);opacity:.8;}40%{transform:translateX(-50%) scaleX(1.05) scaleY(.96);opacity:1;}70%{transform:translateX(-50%) scaleX(.97) scaleY(1.03);opacity:.85;}100%{transform:translateX(-50%) scaleX(1.02) scaleY(.98);opacity:.9;}}
+.card{position:relative;z-index:10;width:min(420px,92vw);
+  background:linear-gradient(170deg,rgba(35,14,14,.97),rgba(22,8,10,.99));
+  border:1px solid var(--border);border-radius:3px;padding:56px 48px 48px;text-align:center;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 60px rgba(180,80,80,.12),0 40px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(232,180,184,.12);
+  animation:cardRise 1.2s cubic-bezier(.22,1,.36,1) both;}
+.card::before,.card::after{content:'❧';position:absolute;font-size:16px;color:var(--rose);opacity:.22;}
+.card::before{top:14px;left:18px;transform:rotate(-30deg);}
+.card::after{bottom:14px;right:18px;transform:rotate(150deg);}
+@keyframes cardRise{from{opacity:0;transform:translateY(50px) scale(.95);filter:blur(6px);}to{opacity:1;transform:none;filter:none;}}
+.heart{font-size:32px;margin:0 auto 22px;animation:heartbeat 2.8s ease-in-out infinite;display:block;line-height:1;filter:drop-shadow(0 0 12px rgba(200,100,100,.5));}
+@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.15);}28%{transform:scale(1);}42%{transform:scale(1.08);}56%{transform:scale(1);}}
+.card-eyebrow{font-family:'Dancing Script',cursive;font-size:15px;color:var(--rose);opacity:.75;letter-spacing:.05em;margin-bottom:8px;animation:fadeUp 1s ease .3s both;}
+.card-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:400;line-height:1.15;color:var(--cream);letter-spacing:.01em;margin-bottom:6px;animation:fadeUp 1s ease .4s both;}
+.card-title em{font-style:italic;color:var(--blush);}
+.card-subtitle{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:36px;letter-spacing:.06em;animation:fadeUp 1s ease .5s both;}
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:30px;animation:fadeUp 1s ease .55s both;}
+.divider-line{flex:1;height:1px;background:var(--border);}
+.divider-heart{font-size:10px;color:var(--rose);opacity:.5;}
+.field{margin-bottom:16px;text-align:left;animation:fadeUp 1s ease both;}
+.field:nth-child(1){animation-delay:.62s;}.field:nth-child(2){animation-delay:.70s;}
+.field label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.field input{width:100%;background:rgba(255,240,235,.04);border:none;border-bottom:1px solid rgba(232,180,184,.25);padding:12px 4px;font-family:'Lato',sans-serif;font-size:15px;color:var(--cream);outline:none;letter-spacing:.04em;transition:border-color .3s;}
+.field input::placeholder{color:var(--muted);font-style:italic;}
+.field input:focus{border-bottom-color:var(--rose);}
+.error{font-size:12px;color:#d47a7a;font-style:italic;margin-bottom:14px;min-height:16px;text-align:center;letter-spacing:.04em;opacity:0;transition:opacity .3s;}
+.error.show{opacity:1;animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.enter-btn{width:100%;padding:15px;background:transparent;border:1px solid var(--rose);border-radius:2px;font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--blush);cursor:pointer;position:relative;overflow:hidden;transition:color .4s,box-shadow .4s;animation:fadeUp 1s ease .78s both;letter-spacing:.06em;}
+.enter-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,123,132,.18),rgba(139,58,66,.12));transform:translateX(-101%);transition:transform .4s cubic-bezier(.22,1,.36,1);}
+.enter-btn:hover{color:var(--cream);box-shadow:0 0 30px rgba(201,123,132,.2);}
+.enter-btn:hover::before{transform:translateX(0);}
+.enter-btn span{position:relative;z-index:1;}
+.card-note{margin-top:22px;font-family:'Dancing Script',cursive;font-size:14px;color:var(--muted);animation:fadeUp 1s ease .88s both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="bg-warm"></div>
+<div class="candle-glow"></div>
+<div class="card">
+  <span class="heart">🌹</span>
+  <div class="card-eyebrow">just the two of us</div>
+  <h1 class="card-title">Welcome to<br><em>Our World</em></h1>
+  <p class="card-subtitle">a place that will always be ours</p>
+  <div class="divider"><div class="divider-line"></div><span class="divider-heart">♥</span><div class="divider-line"></div></div>
+  <div class="field"><label>Who are you?</label><input id="user" type="text" placeholder="person1 or person2" onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()"></div>
+  <div class="field"><label>Our secret</label><input id="pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+  <div class="error" id="error">That doesn't feel right. Try again, love.</div>
+  <button class="enter-btn" id="btn" onclick="login()"><span>Come in ♥</span></button>
+  <p class="card-note">Only us, always.</p>
+</div>
+<script>
+(function(){
+  const c=document.getElementById('c'),ctx=c.getContext('2d');
+  let W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const S=['❤','♥','·','·','·','✦','·'],ps=[];
+  for(let i=0;i<55;i++)ps.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight+window.innerHeight,sym:S[Math.floor(Math.random()*S.length)],size:Math.random()*10+5,speed:Math.random()*.5+.2,drift:(Math.random()-.5)*.4,alpha:Math.random()*.25+.05,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.012,phase:Math.random()*Math.PI*2,sway:Math.random()*.6+.2});
+  let t=0;
+  function draw(){ctx.clearRect(0,0,W,H);t+=.012;for(const p of ps){p.y-=p.speed;p.x+=Math.sin(t*p.sway+p.phase)*p.drift;p.rot+=p.rotSpeed;if(p.y<-30){p.y=H+20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font=p.size+'px serif';ctx.fillStyle=(p.sym==='·'||p.sym==='✦')?'rgba(240,220,210,1)':'rgba(210,120,130,1)';ctx.textAlign='center';ctx.fillText(p.sym,0,0);ctx.restore();}requestAnimationFrame(draw);}
+  draw();
+})();
+function login(){
+  const u=document.getElementById('user').value.trim();
+  const p=document.getElementById('pass').value;
+  const err=document.getElementById('error');
+  err.classList.remove('show');
+  if((u==='person1'||u==='person2')&&p==='1234'){
+    document.getElementById('btn').querySelector('span').textContent='Opening our world…';
+    localStorage.setItem('user',u);
+    setTimeout(()=>window.location.href='home.html',900);
+  } else {
+    document.getElementById('pass').value='';
+    void err.offsetWidth;
+    err.classList.add('show');
+  }
+}
+</script>
+</body>
+</html>
