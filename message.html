@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Message Room</title>
+</head>
+
+<body style="background:#0f172a;color:white;font-family:sans-serif;padding:20px;">
+
+<h2>Message Room</h2>
+
+<div id="display" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
+No message yet
+</div>
+
+<textarea id="msg" placeholder="Write something..." style="width:100%;height:80px;"></textarea><br><br>
+
+<button onclick="sendMessage()">Send</button>
+
+<script>
+let user = localStorage.getItem("user");
+
+function sendMessage(){
+  let text = document.getElementById("msg").value;
+
+  let message = {
+    sender: user,
+    text: text,
+    time: new Date().toLocaleString()
+  };
+
+  localStorage.setItem("latestMessage", JSON.stringify(message));
+
+  document.getElementById("msg").value = "";
+  loadMessage();
+}
+
+function loadMessage(){
+  let data = localStorage.getItem("latestMessage");
+
+  if(data){
+    let msg = JSON.parse(data);
+
+    document.getElementById("display").innerHTML =
+      "<b>" + msg.sender + "</b><br>" +
+      msg.text + "<br><small>" + msg.time + "</small>";
+  }
+}
+
+loadMessage();
+</script>
+
+</body>
+</html>
