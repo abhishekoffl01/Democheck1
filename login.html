@@ -1,36 +1,433 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login · MessageRoom</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b12;
+    --surface: #0d1520;
+    --surface2: #111c2d;
+    --border: rgba(99,179,255,0.12);
+    --accent: #3b9eff;
+    --accent2: #7c3dff;
+    --accent-glow: rgba(59,158,255,0.25);
+    --text: #e2eeff;
+    --muted: #4a6280;
+    --error: #ff5a5a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,158,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,158,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* Orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(1px);
+  }
+  .orb1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(59,158,255,0.08) 0%, transparent 70%);
+    top: -160px; right: -160px;
+  }
+  .orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,61,255,0.07) 0%, transparent 70%);
+    bottom: -120px; left: -120px;
+  }
+  .orb3 {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(59,158,255,0.05) 0%, transparent 70%);
+    top: 50%; left: 10%;
+  }
+
+  /* Floating particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  /* Card */
+  .card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 380px;
+    margin: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    animation: riseIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity: 0.6;
+  }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Icon */
+  .card-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 30px var(--accent-glow);
+    animation: iconPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+  }
+
+  @keyframes iconPop {
+    from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* Headings */
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .card-sub {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s ease 0.25s both;
+  }
+
+  /* Form */
+  .field {
+    margin-bottom: 16px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .field:nth-child(1) { animation-delay: 0.3s; }
+  .field:nth-child(2) { animation-delay: 0.38s; }
+
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 14px 13px 42px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    -webkit-text-fill-color: var(--text);
+  }
+
+  .field input::placeholder { color: var(--muted); }
+
+  .field input:focus {
+    border-color: rgba(59,158,255,0.5);
+    box-shadow: 0 0 0 3px rgba(59,158,255,0.08);
+  }
+
+  .field input:focus + svg,
+  .input-wrap:focus-within svg {
+    color: var(--accent);
+  }
+
+  /* Error */
+  .error-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,90,90,0.06);
+    border: 1px solid rgba(255,90,90,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--error);
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+    animation: shake 0.4s ease;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s, max-height 0.3s, margin 0.3s;
+  }
+
+  .error-msg.show {
+    opacity: 1;
+    max-height: 60px;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-6px); }
+    40%       { transform: translateX(6px); }
+    60%       { transform: translateX(-4px); }
+    80%       { transform: translateX(4px); }
+  }
+
+  /* Button */
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 24px rgba(59,158,255,0.3);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.45s both;
+    margin-top: 4px;
+  }
+
+  .login-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(59,158,255,0.45);
+  }
+
+  .login-btn:hover::after { opacity: 1; }
+  .login-btn:active { transform: translateY(0); }
+
+  .login-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .login-btn.loading .btn-label { display: none; }
+  .login-btn.loading .spinner { display: block; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Footer */
+  .card-footer {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    animation: fadeUp 0.5s ease 0.5s both;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .card-footer::before,
+  .card-footer::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
+<body>
 
-<body style="background:#0f172a;color:white;text-align:center;padding:50px;">
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
 
-<h2>Login</h2>
+<!-- Particles -->
+<div class="particles" id="particles"></div>
 
-<input id="user" placeholder="Username"><br><br>
-<input id="pass" type="password" placeholder="Password"><br><br>
+<div class="card">
+  <div class="card-icon">💬</div>
+  <h1 class="card-title">Enter Our World</h1>
+  <p class="card-sub">MessageRoom · Private Access</p>
 
-<button onclick="login()">Enter</button>
+  <div class="error-msg" id="error">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    Invalid username or password
+  </div>
+
+  <div class="field">
+    <label>Username</label>
+    <div class="input-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      <input id="user" type="text" placeholder="person1 or person2" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <div class="input-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <input id="pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    </div>
+  </div>
+
+  <button class="login-btn" id="loginBtn" onclick="login()">
+    <span class="btn-label">Enter Room →</span>
+    <div class="spinner"></div>
+  </button>
+
+  <div class="card-footer">Secure · Private · Encrypted</div>
+</div>
 
 <script>
-function login(){
-  let u = document.getElementById("user").value;
-  let p = document.getElementById("pass").value;
-
-  if(u==="person1" && p==="1234"){
-    localStorage.setItem("user","Person1");
-    window.location.href="home.html";
-  } 
-  else if(u==="person2" && p==="1234"){
-    localStorage.setItem("user","Person2");
-    window.location.href="home.html";
-  } 
-  else {
-    alert("Wrong login");
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${Math.random() > 0.5 ? 2 : 3}px;
+      height: ${Math.random() > 0.5 ? 2 : 3}px;
+      animation-duration: ${6 + Math.random() * 10}s;
+      animation-delay: ${Math.random() * 8}s;
+      opacity: 0;
+    `;
+    container.appendChild(p);
   }
-}
-</script>
 
+  function login() {
+    const u = document.getElementById("user").value.trim();
+    const p = document.getElementById("pass").value;
+    const btn = document.getElementById("loginBtn");
+    const error = document.getElementById("error");
+
+    error.classList.remove("show");
+
+    if ((u === "person1" || u === "person2") && p === "1234") {
+      btn.classList.add("loading");
+      setTimeout(() => {
+        localStorage.setItem("user", u);
+        window.location.href = "home.html";
+      }, 800);
+    } else {
+      error.classList.add("show");
+      // Re-trigger shake
+      error.style.animation = 'none';
+      void error.offsetWidth;
+      error.style.animation = '';
+      document.getElementById("pass").value = "";
+      document.getElementById("pass").focus();
+    }
+  }
+</script>
 </body>
 </html>
