@@ -1,76 +1,633 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Message Room</title>
-</head>
-
-<body style="background:#0f172a;color:white;font-family:sans-serif;padding:20px;">
-
-<h2>Message Room</h2>
-
-<h3>PostBox (Latest Message)</h3>
-<div id="latest" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
-No message yet
-</div>
-
-<textarea id="msg" placeholder="Write message..." style="width:100%;height:80px;"></textarea><br><br>
-
-<button onclick="sendMessage()">Send</button>
-
-<h3 style="margin-top:30px;">All Messages</h3>
-<div id="history" style="background:#1e293b;padding:15px;border-radius:10px;max-height:300px;overflow:auto;">
-No messages yet
-</div>
-
-<br>
-<button onclick="window.location.href='home.html'">Back</button>
-
-<script>
-function sendMessage(){
-  let text = document.getElementById("msg").value.trim();
-  if(text === "") return;
-
-  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
-
-  messages.push({
-    text: text,
-    time: new Date().toLocaleString()
-  });
-
-  localStorage.setItem("allMessages", JSON.stringify(messages));
-
-  document.getElementById("msg").value = "";
-
-  loadMessages();
-}
-
-function loadMessages(){
-  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
-
-  let historyDiv = document.getElementById("history");
-  let latestDiv = document.getElementById("latest");
-
-  if(messages.length === 0){
-    historyDiv.innerHTML = "No messages yet";
-    latestDiv.innerHTML = "No message yet";
-    return;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Message Room · MessageRoom</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b12;
+    --surface: #0d1520;
+    --surface2: #111c2d;
+    --border: rgba(99,179,255,0.12);
+    --accent: #3b9eff;
+    --accent2: #7c3dff;
+    --accent-glow: rgba(59,158,255,0.25);
+    --text: #e2eeff;
+    --muted: #4a6280;
   }
 
-  let html = "";
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  messages.forEach(m => {
-    html += "<div style='margin-bottom:10px'>" +
-            m.text + "<br><small>" + m.time + "</small></div><hr>";
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,158,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,158,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .orb1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(59,158,255,0.07) 0%, transparent 70%);
+    top: -160px; right: -160px;
+  }
+  .orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,61,255,0.06) 0%, transparent 70%);
+    bottom: -120px; left: -120px;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(90deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+  }
+  .back-btn:hover {
+    color: var(--text);
+    border-color: rgba(99,179,255,0.3);
+    background: var(--surface);
+  }
+
+  /* Who's writing */
+  .sender-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+  .sender-avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .sender-info { flex: 1; }
+  .sender-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sender-role {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: #22d97a;
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,217,122,0.4); }
+    50%       { box-shadow: 0 0 0 5px rgba(34,217,122,0); }
+  }
+
+  /* Latest card */
+  .latest-card {
+    background: linear-gradient(135deg, #0d1a2e 0%, #111c38 100%);
+    border: 1px solid rgba(59,158,255,0.2);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+  .latest-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  #latest-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.35;
+    word-break: break-word;
+    min-height: 28px;
+  }
+  #latest-text.empty {
+    font-size: 14px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    color: var(--muted);
+    font-style: italic;
+  }
+  #latest-meta {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #latest-meta .by {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 10px;
+    font-size: 10px;
+  }
+
+  /* Compose */
+  .compose-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 4px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease 0.2s both;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .compose-card:focus-within {
+    border-color: rgba(59,158,255,0.4);
+    box-shadow: 0 0 30px rgba(59,158,255,0.07);
+  }
+  #msg {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    padding: 18px 20px 12px;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+  #msg::placeholder { color: var(--muted); }
+  .compose-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+  }
+  #char-count { font-size: 11px; color: var(--muted); }
+
+  .send-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(59,158,255,0.3);
+  }
+  .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59,158,255,0.4); }
+  .send-btn:active { transform: translateY(0); }
+  .send-btn:hover svg { transform: translateX(3px); }
+  .send-btn svg { transition: transform 0.25s; }
+
+  /* History */
+  .history-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.25s both;
+  }
+  .history-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .history-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #msg-count {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 10px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+  }
+  .clear-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .clear-btn:hover {
+    color: #ff5a5a;
+    border-color: rgba(255,90,90,0.3);
+    background: rgba(255,90,90,0.06);
+  }
+
+  #all {
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  #all::-webkit-scrollbar { width: 4px; }
+  #all::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .msg-item {
+    display: flex;
+    gap: 14px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+    animation: slideIn 0.35s ease both;
+  }
+  .msg-item:last-child { border-bottom: none; }
+  .msg-item:hover { background: var(--surface2); }
+
+  .msg-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .msg-avatar.person2 {
+    background: linear-gradient(135deg, #ff6b9d, #ff9a3b);
+  }
+
+  .msg-body { flex: 1; }
+  .msg-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  .msg-sender {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .msg-time {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .msg-text {
+    font-size: 14px;
+    color: #c8d8f0;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+
+  .empty-state {
+    padding: 50px 24px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { font-size: 13px; letter-spacing: 0.05em; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid rgba(34,217,122,0.3);
+    border-radius: 100px;
+    padding: 10px 24px;
+    font-size: 12px;
+    color: #22d97a;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 100;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="wrapper">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">💬</div>
+      <span class="logo-text">Message Room</span>
+    </div>
+    <button class="back-btn" onclick="window.location.href='home.html'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Home
+    </button>
+  </header>
+
+  <!-- Sender identity -->
+  <div class="sender-row">
+    <div class="sender-avatar" id="sender-avatar">—</div>
+    <div class="sender-info">
+      <div class="sender-name" id="sender-name">—</div>
+      <div class="sender-role">Sending as</div>
+    </div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      Live
+    </div>
+  </div>
+
+  <!-- Latest -->
+  <div class="latest-card">
+    <div class="section-label">Postbox · Latest</div>
+    <div id="latest-text" class="empty">No message yet...</div>
+    <div id="latest-meta"></div>
+  </div>
+
+  <!-- Compose -->
+  <div class="compose-card">
+    <textarea id="msg" placeholder="Write something..." maxlength="500"></textarea>
+    <div class="compose-footer">
+      <span id="char-count">0 / 500</span>
+      <button class="send-btn" onclick="send()">
+        Send
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-card">
+    <div class="history-header">
+      <div class="history-title">
+        All Messages
+        <span id="msg-count">0</span>
+      </div>
+      <button class="clear-btn" onclick="clearAll()">Clear all</button>
+    </div>
+    <div id="all">
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>No messages yet</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const user = localStorage.getItem("user") || "person1";
+  if (!localStorage.getItem("user")) window.location.href = "index.html";
+
+  // Set avatar
+  const avatarEl = document.getElementById("sender-avatar");
+  const nameEl   = document.getElementById("sender-name");
+  avatarEl.textContent = user.charAt(0).toUpperCase() + (user.slice(-1));
+  if (user === "person2") avatarEl.style.background = "linear-gradient(135deg,#ff6b9d,#ff9a3b)";
+  nameEl.textContent = user;
+
+  // Char counter
+  const msgEl = document.getElementById("msg");
+  msgEl.addEventListener("input", () => {
+    const len = msgEl.value.length;
+    const el = document.getElementById("char-count");
+    el.textContent = `${len} / 500`;
+    el.style.color = len > 450 ? '#ff5a5a' : 'var(--muted)';
+  });
+  msgEl.addEventListener("keydown", e => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send();
   });
 
-  historyDiv.innerHTML = html;
+  function send() {
+    const text = msgEl.value.trim();
+    if (!text) return;
+    const messages = JSON.parse(localStorage.getItem("msgs")) || [];
+    messages.push({ text, sender: user, time: new Date().toLocaleString() });
+    localStorage.setItem("msgs", JSON.stringify(messages));
+    msgEl.value = "";
+    document.getElementById("char-count").textContent = "0 / 500";
+    load();
+    showToast("Message sent ✓");
+  }
 
-  let last = messages[messages.length - 1];
-  latestDiv.innerHTML = last.text + "<br><small>" + last.time + "</small>";
-}
+  function load() {
+    const messages = JSON.parse(localStorage.getItem("msgs")) || [];
+    const allEl    = document.getElementById("all");
+    const latestEl = document.getElementById("latest-text");
+    const metaEl   = document.getElementById("latest-meta");
+    const countEl  = document.getElementById("msg-count");
 
-loadMessages();
+    countEl.textContent = messages.length;
+
+    if (messages.length === 0) {
+      allEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No messages yet</p></div>`;
+      latestEl.textContent = "No message yet...";
+      latestEl.className = "empty";
+      metaEl.innerHTML = "";
+      return;
+    }
+
+    const last = messages[messages.length - 1];
+    latestEl.textContent = last.text || last;
+    latestEl.className = "";
+    const senderName = last.sender || "unknown";
+    metaEl.innerHTML = `<span class="by">${senderName}</span> ${last.time || ""}`;
+
+    const html = [...messages].reverse().map((m, i) => {
+      const sender = m.sender || "person1";
+      const initials = sender.charAt(0).toUpperCase() + sender.slice(-1);
+      const cls = sender === "person2" ? "person2" : "";
+      const delay = Math.min(i * 0.04, 0.4);
+      return `
+        <div class="msg-item" style="animation-delay:${delay}s">
+          <div class="msg-avatar ${cls}">${initials}</div>
+          <div class="msg-body">
+            <div class="msg-header">
+              <span class="msg-sender">${escapeHTML(sender)}</span>
+              <span class="msg-time">${m.time || ""}</span>
+            </div>
+            <div class="msg-text">${escapeHTML(m.text || m)}</div>
+          </div>
+        </div>`;
+    }).join("");
+    allEl.innerHTML = html;
+  }
+
+  function clearAll() {
+    if (!confirm("Clear all messages?")) return;
+    localStorage.removeItem("msgs");
+    load();
+    showToast("Cleared ✓");
+  }
+
+  function escapeHTML(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  load();
 </script>
-
 </body>
 </html>
