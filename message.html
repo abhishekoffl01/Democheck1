@@ -8,22 +8,60 @@
 
 <h2>Message Room</h2>
 
-<div id="display" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
+<h3>PostBox (Latest Message)</h3>
+<div id="latest" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
 No message yet
 </div>
 
+<h3>Write Message</h3>
 <textarea id="msg" placeholder="Write something..." style="width:100%;height:80px;"></textarea><br><br>
 
 <button onclick="sendMessage()">Send</button>
 
-<br><br>
+<h3 style="margin-top:30px;">All Messages</h3>
+<div id="history" style="background:#1e293b;padding:15px;border-radius:10px;max-height:300px;overflow:auto;">
+No messages yet
+</div>
+
+<br>
 <button onclick="goBack()">Back</button>
 
 <script>
 let user = localStorage.getItem("user");
 
+// Load all messages
+function loadMessages(){
+  let data = localStorage.getItem("allMessages");
+
+  if(data){
+    let messages = JSON.parse(data);
+
+    let historyHTML = "";
+
+    messages.forEach(msg => {
+      historyHTML += 
+        "<div style='margin-bottom:10px;padding:10px;background:#334155;border-radius:8px;'>" +
+        "<b>" + msg.sender + "</b><br>" +
+        msg.text + "<br>" +
+        "<small>" + msg.time + "</small>" +
+        "</div>";
+    });
+
+    document.getElementById("history").innerHTML = historyHTML;
+
+    // show latest
+    let last = messages[messages.length - 1];
+    document.getElementById("latest").innerHTML =
+      "<b>" + last.sender + "</b><br>" +
+      last.text + "<br><small>" + last.time + "</small>";
+  }
+}
+
+// Send message
 function sendMessage(){
   let text = document.getElementById("msg").value;
+
+  if(text.trim() === "") return;
 
   let message = {
     sender: user,
@@ -31,29 +69,23 @@ function sendMessage(){
     time: new Date().toLocaleString()
   };
 
-  localStorage.setItem("latestMessage", JSON.stringify(message));
+  let data = localStorage.getItem("allMessages");
+  let messages = data ? JSON.parse(data) : [];
+
+  messages.push(message);
+
+  localStorage.setItem("allMessages", JSON.stringify(messages));
 
   document.getElementById("msg").value = "";
-  loadMessage();
-}
 
-function loadMessage(){
-  let data = localStorage.getItem("latestMessage");
-
-  if(data){
-    let msg = JSON.parse(data);
-
-    document.getElementById("display").innerHTML =
-      "<b>" + msg.sender + "</b><br>" +
-      msg.text + "<br><small>" + msg.time + "</small>";
-  }
+  loadMessages();
 }
 
 function goBack(){
   window.location.href="home.html";
 }
 
-loadMessage();
+loadMessages();
 </script>
 
 </body>
