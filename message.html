@@ -8,7 +8,7 @@
 
 <h2>Message Room</h2>
 
-<h3>PostBox</h3>
+<h3>PostBox (Latest Message)</h3>
 <div id="latest" style="background:#1e293b;padding:15px;border-radius:10px;margin-bottom:20px;">
 No message yet
 </div>
@@ -26,9 +26,24 @@ No messages yet
 <button onclick="window.location.href='home.html'">Back</button>
 
 <script>
-let user = localStorage.getItem("user");
+function sendMessage(){
+  let text = document.getElementById("msg").value.trim();
+  if(text === "") return;
 
-// Load messages
+  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
+
+  messages.push({
+    text: text,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("allMessages", JSON.stringify(messages));
+
+  document.getElementById("msg").value = "";
+
+  loadMessages();
+}
+
 function loadMessages(){
   let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
 
@@ -44,39 +59,14 @@ function loadMessages(){
   let html = "";
 
   messages.forEach(m => {
-    html += "<div style='margin-bottom:10px;padding:10px;background:#334155;border-radius:8px'>" +
-            "<b>" + m.sender + "</b><br>" +
-            m.text + "<br>" +
-            "<small>" + m.time + "</small>" +
-            "</div>";
+    html += "<div style='margin-bottom:10px'>" +
+            m.text + "<br><small>" + m.time + "</small></div><hr>";
   });
 
   historyDiv.innerHTML = html;
 
   let last = messages[messages.length - 1];
-  latestDiv.innerHTML =
-    "<b>" + last.sender + "</b><br>" +
-    last.text + "<br><small>" + last.time + "</small>";
-}
-
-// Send message
-function sendMessage(){
-  let text = document.getElementById("msg").value.trim();
-  if(text === "") return;
-
-  let messages = JSON.parse(localStorage.getItem("allMessages")) || [];
-
-  messages.push({
-    sender: user,
-    text: text,
-    time: new Date().toLocaleString()
-  });
-
-  localStorage.setItem("allMessages", JSON.stringify(messages));
-
-  document.getElementById("msg").value = "";
-
-  loadMessages();
+  latestDiv.innerHTML = last.text + "<br><small>" + last.time + "</small>";
 }
 
 loadMessages();
