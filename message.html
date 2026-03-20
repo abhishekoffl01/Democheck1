@@ -4,142 +4,177 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>New Letter · Our World</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#160808;--surface:#1e0d0d;--surface2:#261010;--blush:#e8b4b8;--rose:#c97b84;--deep-rose:#8b3a42;--cream:#f5ede4;--cream2:#ede0d4;--text:#f0e4dc;--muted:#8a6a68;--border:rgba(232,180,184,0.15);--glow:rgba(201,123,132,0.13);}
+/* ROOM.CSS — paste this <style> block into message/postbox/calendar/gallery */
+/* Warm wood museum room — self contained */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap');
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.bg-warm{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 110%,rgba(100,30,30,.5) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 0% 0%,rgba(60,18,18,.3) 0%,transparent 55%);}
-.candle-glow{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(255,110,40,.08) 0%,rgba(180,50,20,.04) 45%,transparent 70%);border-radius:50%;animation:flicker 4s ease-in-out infinite alternate;z-index:0;pointer-events:none;}
-@keyframes flicker{0%{transform:translateX(-50%) scale(1);opacity:.8;}40%{transform:translateX(-50%) scaleX(1.04) scaleY(.97);opacity:1;}70%{transform:translateX(-50%) scaleX(.98) scaleY(1.02);opacity:.85;}100%{transform:translateX(-50%) scaleX(1.02) scaleY(.99);opacity:.9;}}
-.page{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;}
+html,body{overflow-x:hidden;}
+body{font-family:'Cormorant Garamond',serif;background:#0a0502;color:#2a1e0e;min-height:100vh;}
 
-/* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:22px 52px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.room-wall{position:fixed;inset:0;z-index:0;will-change:transform;
+  background:radial-gradient(ellipse 95% 65% at 50% 28%,#c4b490 0%,#b0a278 25%,#948a64 55%,#786e50 80%,#605840 100%);}
+.room-wall::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 35% 100% at 0% 50%,rgba(25,12,4,.58) 0%,transparent 65%),radial-gradient(ellipse 35% 100% at 100% 50%,rgba(25,12,4,.58) 0%,transparent 65%),radial-gradient(ellipse 100% 25% at 50% 0%,rgba(15,8,2,.68) 0%,transparent 55%),radial-gradient(ellipse 100% 18% at 50% 100%,rgba(8,4,1,.78) 0%,transparent 60%);}
+.room-wall::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28%;
+  background:linear-gradient(to top,#3c2610 0px,#4e3218 12px,#624020 24px,#7a5230 40px,#8a6040 55%,rgba(130,90,55,.25) 100%);
+  border-top:2px solid rgba(160,120,70,.38);}
+
+.room-ceiling{position:fixed;top:0;left:0;right:0;z-index:10;height:22vh;will-change:transform;
+  background:linear-gradient(to bottom,#0e0704 0%,#1c0e06 20%,#2c1a0a 45%,#3c2412 65%,rgba(60,34,14,.4) 85%,transparent 100%);}
+.room-ceiling::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0px,rgba(0,0,0,.28) 3px,transparent 3px,transparent calc(100%/8 - 3px),rgba(0,0,0,.18) calc(100%/8 - 3px),rgba(0,0,0,.18) calc(100%/8)),repeating-linear-gradient(0deg,transparent 0px,transparent 28px,rgba(0,0,0,.1) 28px,rgba(0,0,0,.1) 29px);}
+.room-ceiling::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:radial-gradient(ellipse 100% 100% at 50% 100%,rgba(255,180,80,.055) 0%,transparent 70%);}
+
+.track-rail{position:fixed;top:22vh;left:4%;right:4%;z-index:11;height:10px;
+  background:linear-gradient(to bottom,#120a04,#201408,#120a04);border-radius:5px;
+  box-shadow:0 3px 10px rgba(0,0,0,.7),0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.03);}
+
+.room-floor{position:fixed;bottom:0;left:0;right:0;z-index:10;height:26vh;will-change:transform;overflow:hidden;}
+.fp{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#5a3c18 0px,#6a4820 58px,#4e3212 58px,#5a3c18 60px,#7a5830 60px,#8a6840 118px,#5a3c18 118px,#5a3c18 120px),linear-gradient(to top,#1e0e06 0%,#3a2010 18%,#6a4828 42%,#9a7858 68%,#b89070 88%,#c8a880 100%);background-blend-mode:multiply;}
+.fs2{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,210,130,.1) 0%,rgba(255,220,150,.04) 35%,transparent 60%);animation:fs 7s ease-in-out infinite alternate;}
+@keyframes fs{0%{opacity:.4;}100%{opacity:1;}}
+.fao{position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(to bottom,rgba(15,8,2,.42),transparent);}
+
+.baseboard{position:fixed;bottom:26vh;left:0;right:0;z-index:11;height:12px;
+  background:linear-gradient(to top,#1c0e06,#2c1a0a,#1c0e06);
+  box-shadow:0 -3px 10px rgba(0,0,0,.4),0 3px 6px rgba(0,0,0,.3);}
+.baseboard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(180,140,60,.38),transparent);}
+
+.spots-fixed{position:fixed;top:0;left:0;right:0;bottom:0;z-index:3;pointer-events:none;}
+.sp-h{position:absolute;top:calc(22vh + 10px);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f0e8c0,#c0a050 55%,#504020);transform:translateX(-50%);box-shadow:0 0 5px rgba(240,220,140,.28),0 2px 5px rgba(0,0,0,.8);}
+.sp-c{position:absolute;top:calc(22vh + 20px);transform:translateX(-50%);width:190px;height:52vh;background:linear-gradient(to bottom,rgba(255,235,150,.1) 0%,rgba(255,215,110,.055) 22%,rgba(255,195,80,.022) 48%,transparent 78%);clip-path:polygon(34% 0%,66% 0%,100% 100%,0% 100%);animation:spf var(--spd,5s) ease-in-out infinite alternate;}
+@keyframes spf{0%{opacity:.52;transform:translateX(-50%) skewX(0deg);}30%{opacity:.86;transform:translateX(-50%) skewX(.8deg);}60%{opacity:.62;transform:translateX(-50%) skewX(-.5deg);}100%{opacity:.58;transform:translateX(-50%) skewX(.3deg);}}
+.sp-p{position:absolute;bottom:calc(26vh + 2px);transform:translateX(-50%);width:130px;height:22px;background:radial-gradient(ellipse,rgba(255,225,140,.17) 0%,transparent 70%);border-radius:50%;animation:spf var(--spd,5s) ease-in-out infinite alternate;}
+
+canvas.dust{position:fixed;inset:0;z-index:5;pointer-events:none;}
+.vignette{position:fixed;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse 82% 82% at 50% 48%,transparent 35%,rgba(6,3,1,.62) 100%);}
+
+.site-header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:16px 56px;background:linear-gradient(to bottom,rgba(10,5,2,.94) 60%,transparent);}
 .brand{display:flex;align-items:center;gap:12px;}
-.brand-heart{font-size:18px;animation:heartbeat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 7px rgba(200,100,100,.4));}
-@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.18);}28%{transform:scale(1);}42%{transform:scale(1.1);}56%{transform:scale(1);}}
-.brand-name{font-family:'Dancing Script',cursive;font-size:20px;color:var(--blush);opacity:.8;}
-.back-btn{font-size:11px;letter-spacing:.12em;color:var(--muted);background:transparent;border:1px solid rgba(138,106,104,.3);border-radius:2px;padding:7px 16px;cursor:pointer;transition:all .25s;text-transform:uppercase;font-family:'Lato',sans-serif;}
-.back-btn:hover{color:var(--blush);border-color:var(--border);}
+.brand-r{font-size:16px;}
+.brand-n{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:rgba(230,215,190,.82);letter-spacing:.06em;}
+.hbtn{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.2em;color:rgba(220,200,160,.38);background:transparent;border:1px solid rgba(220,200,160,.12);border-radius:1px;padding:7px 14px;cursor:pointer;transition:all .25s;text-transform:uppercase;}
+.hbtn:hover{color:rgba(220,200,160,.75);border-color:rgba(220,200,160,.28);}
 
-/* MAIN */
-.main{flex:1;display:flex;align-items:stretch;}
-.compose{flex:1;padding:52px 60px;display:flex;flex-direction:column;max-width:680px;margin:0 auto;width:100%;}
+.scroll-content{position:relative;z-index:15;padding:calc(22vh + 60px) 0 calc(26vh + 60px);min-height:100vh;}
+.content-box{max-width:780px;width:100%;margin:0 auto;padding:40px 56px 0;}
 
-.pre{font-family:'Dancing Script',cursive;font-size:17px;color:var(--rose);opacity:.6;margin-bottom:6px;}
-.title{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;color:var(--cream);margin-bottom:8px;line-height:1.15;}
-.title em{font-style:italic;color:var(--blush);}
-.subtitle{font-size:13px;font-style:italic;color:var(--muted);margin-bottom:36px;line-height:1.65;letter-spacing:.04em;}
+.page-pre{font-family:'Dancing Script',cursive;font-size:17px;color:rgba(200,170,110,.52);margin-bottom:6px;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:rgba(230,215,185,.92);margin-bottom:8px;line-height:1.1;text-shadow:0 2px 16px rgba(0,0,0,.35);}
+.page-title em{font-style:italic;color:#d4a84c;}
+.page-sub{font-size:13px;font-style:italic;color:rgba(190,165,120,.5);margin-bottom:28px;line-height:1.65;letter-spacing:.04em;}
 
-/* Notif banner */
-.notif-banner{display:none;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(180,80,80,.1),rgba(140,50,50,.06));border:1px solid rgba(201,123,132,.22);border-left:3px solid var(--rose);border-radius:2px;padding:14px 16px;margin-bottom:28px;cursor:pointer;transition:background .3s;animation:notifSlide .5s ease both;}
-.notif-banner:hover{background:linear-gradient(135deg,rgba(180,80,80,.16),rgba(140,50,50,.1));}
-.notif-banner.show{display:flex;}
-@keyframes notifSlide{from{opacity:0;transform:translateX(-12px);}to{opacity:1;transform:none;}}
-.notif-icon{font-size:22px;animation:swing 2.5s ease-in-out infinite;flex-shrink:0;}
-@keyframes swing{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(10deg);}}
-.notif-title{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;color:var(--blush);margin-bottom:2px;}
-.notif-sub{font-size:11px;color:var(--muted);letter-spacing:.04em;}
-
-/* Paper writing area */
-.paper-wrap{flex:1;display:flex;flex-direction:column;position:relative;}
-.paper-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.paper{flex:1;min-height:220px;background:rgba(255,240,235,.03);border:none;border-bottom:1px solid rgba(232,180,184,.2);padding:16px 4px;font-family:'Playfair Display',serif;font-size:18px;color:var(--cream);line-height:1.9;resize:none;outline:none;letter-spacing:.02em;transition:border-color .3s,background .3s;}
-.paper::placeholder{color:var(--muted);font-style:italic;}
-.paper:focus{border-bottom-color:var(--rose);background:rgba(201,123,132,.03);}
-.paper-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;}
-#cc{font-size:11px;color:var(--muted);}
-.send-btn{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--blush);background:transparent;border:1px solid var(--rose);border-radius:2px;padding:12px 32px;cursor:pointer;position:relative;overflow:hidden;transition:color .35s,box-shadow .35s;letter-spacing:.04em;}
-.send-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,123,132,.18),rgba(139,58,66,.1));transform:translateX(-101%);transition:transform .35s cubic-bezier(.22,1,.36,1);}
-.send-btn:hover{color:var(--cream);box-shadow:0 0 20px rgba(201,123,132,.2);}
-.send-btn:hover::before{transform:translateX(0);}
-.send-btn span{position:relative;z-index:1;}
-.sending-as{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);font-family:'Dancing Script',cursive;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px;}
-.sender-heart{color:var(--rose);opacity:.6;font-size:13px;}
-
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(22,8,8,.95);border:1px solid rgba(201,123,132,.22);border-radius:2px;padding:10px 28px;font-family:'Dancing Script',cursive;font-size:15px;color:var(--blush);opacity:0;transition:all .3s ease;z-index:100;pointer-events:none;white-space:nowrap;}
+.toast{position:fixed;bottom:calc(26vh + 20px);left:50%;transform:translateX(-50%) translateY(12px);background:rgba(240,232,215,.97);border:1px solid rgba(120,90,40,.2);border-radius:1px;padding:10px 28px;font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:#3a2810;opacity:0;transition:all .3s;z-index:100;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+@keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+
+/* Parallax scroll JS helper classes */
+
+
+.notif-banner{display:none;align-items:center;gap:12px;background:rgba(180,140,60,.1);border:1px solid rgba(180,140,60,.22);border-left:3px solid #c8a040;border-radius:1px;padding:14px 16px;margin-bottom:26px;cursor:pointer;transition:background .3s;animation:fu .5s ease both;}
+.notif-banner:hover{background:rgba(180,140,60,.16);}
+.notif-banner.show{display:flex;}
+.ni{font-size:20px;animation:swing 2.5s ease-in-out infinite;flex-shrink:0;}
+@keyframes swing{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(10deg);}}
+.nt{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(220,195,145,.85);}
+.ns{font-size:11px;color:rgba(180,155,110,.45);margin-top:2px;}
+.flbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(180,155,110,.45);margin-bottom:9px;}
+.paper{width:100%;min-height:200px;background:rgba(235,225,200,.06);border:none;border-bottom:1px solid rgba(160,130,70,.22);padding:16px 3px;font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(230,215,185,.92);line-height:1.9;resize:none;outline:none;letter-spacing:.02em;transition:border-color .3s,background .3s;}
+.paper::placeholder{color:rgba(160,130,70,.35);font-style:italic;}
+.paper:focus{border-bottom-color:rgba(200,160,70,.55);background:rgba(235,225,200,.04);}
+.pfoot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+.cc{font-size:11px;color:rgba(160,130,70,.4);font-family:'Cinzel',serif;letter-spacing:.05em;}
+.sbtn{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(210,180,120,.8);background:transparent;border:1px solid rgba(180,140,60,.38);border-radius:1px;padding:11px 30px;cursor:pointer;position:relative;overflow:hidden;transition:color .35s,box-shadow .35s;}
+.sbtn::before{content:'';position:absolute;inset:0;background:rgba(180,140,60,.1);transform:translateX(-101%);transition:transform .35s cubic-bezier(.22,1,.36,1);}
+.sbtn:hover{color:rgba(240,225,195,.95);box-shadow:0 0 20px rgba(180,140,60,.15);}
+.sbtn:hover::before{transform:translateX(0);}
+.sbtn span{position:relative;z-index:1;}
+.from-line{margin-top:20px;padding-top:16px;border-top:1px solid rgba(140,110,55,.12);font-family:'Dancing Script',cursive;font-size:15px;color:rgba(170,145,100,.45);display:flex;align-items:center;gap:8px;}
+
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div class="bg-warm"></div>
-<div class="candle-glow"></div>
-<div class="page">
-<header class="header">
-  <div class="brand"><span class="brand-heart">🌹</span><span class="brand-name">New Letter</span></div>
-  <button class="back-btn" onclick="goHome()">← Home</button>
+
+<div class="room-wall" id="rwall"></div>
+<div class="room-ceiling" id="rceil"></div>
+<div class="track-rail"></div>
+<div class="baseboard"></div>
+<div class="room-floor" id="rfloor">
+  <div class="fp"></div><div class="fs2"></div><div class="fao"></div>
+</div>
+<div class="spots-fixed">
+  <div class="sp-h" style="left:18%"></div><div class="sp-h" style="left:50%"></div><div class="sp-h" style="left:82%"></div>
+  <div class="sp-c" style="left:18%;--spd:4.8s"></div><div class="sp-c" style="left:50%;--spd:6.4s"></div><div class="sp-c" style="left:82%;--spd:5.2s"></div>
+  <div class="sp-p" style="left:18%;--spd:4.8s"></div><div class="sp-p" style="left:50%;--spd:6.4s"></div><div class="sp-p" style="left:82%;--spd:5.2s"></div>
+</div>
+<canvas class="dust" id="dust"></canvas>
+<div class="vignette"></div>
+
+<header class="site-header">
+  <div class="brand"><span class="brand-r">🌹</span><span class="brand-n">New Letter</span></div>
+  <button class="hbtn" onclick="window.location.href='home.html'">← Home</button>
 </header>
-<div class="main">
-<div class="compose" style="animation:fadeUp .8s ease .1s both">
-  <div class="pre">write something beautiful</div>
-  <div class="title">A New <em>Letter</em></div>
-  <p class="subtitle">Words are the closest thing to magic.<br>Write yours here, sealed and sent with love.</p>
+<div class="scroll-content">
+  <div class="content-box">
 
-  <div class="notif-banner" id="notif-banner" onclick="window.location.href='postbox.html'">
-    <span class="notif-icon">💌</span>
-    <div>
-      <div class="notif-title" id="notif-title">A letter arrived for you</div>
-      <div class="notif-sub">go to postbox to read ♥</div>
-    </div>
-  </div>
-
-  <div class="paper-wrap">
-    <div class="paper-label">Your words</div>
-    <textarea class="paper" id="msg" placeholder="My love, today I wanted to tell you..." maxlength="800"></textarea>
-    <div class="paper-footer">
-      <span id="cc">0 / 800</span>
-      <button class="send-btn" onclick="sendMsg()"><span>Send with love ♥</span></button>
-    </div>
-  </div>
-
-  <div class="sending-as">
-    <span class="sender-heart">♥</span>
-    writing as <strong style="color:var(--blush);margin-left:4px;" id="sname">—</strong>
-  </div>
+<div style="animation:fu .8s ease .1s both">
+<div class="page-pre">write something beautiful</div>
+<div class="page-title">A New <em>Letter</em></div>
+<p class="page-sub">Words are the closest thing to magic.<br>Write yours here, sealed and sent with love.</p>
+<div class="notif-banner" id="nb" onclick="window.location.href='postbox.html'">
+  <span class="ni">💌</span>
+  <div><div class="nt" id="nt">A letter arrived for you</div><div class="ns">go to postbox to read ♥</div></div>
 </div>
+<div class="flbl">Your words</div>
+<textarea class="paper" id="msg" placeholder="My love, today I wanted to tell you..." maxlength="800"></textarea>
+<div class="pfoot">
+  <span id="cc" class="cc">0 / 800</span>
+  <button class="sbtn" onclick="sendMsg()"><span>Send with love ♥</span></button>
 </div>
+<div class="from-line">♥ <span>writing as</span> <strong style="color:rgba(200,160,80,.7);margin-left:4px" id="sn">—</strong></div>
+</div>
+
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-(function(){const c=document.getElementById('c'),ctx=c.getContext('2d');let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}resize();window.addEventListener('resize',resize);const S=['❤','♥','·','·','✿','·'],ps=[];for(let i=0;i<45;i++)ps.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight+window.innerHeight,sym:S[Math.floor(Math.random()*S.length)],size:Math.random()*8+4,speed:Math.random()*.4+.15,drift:(Math.random()-.5)*.3,alpha:Math.random()*.18+.04,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.01,phase:Math.random()*Math.PI*2,sway:Math.random()*.5+.2});let t=0;function draw(){ctx.clearRect(0,0,W,H);t+=.01;for(const p of ps){p.y-=p.speed;p.x+=Math.sin(t*p.sway+p.phase)*p.drift;p.rot+=p.rotSpeed;if(p.y<-30){p.y=H+20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font=p.size+'px serif';ctx.fillStyle=(p.sym==='·'||p.sym==='✿')?'rgba(240,215,205,1)':'rgba(210,120,130,1)';ctx.textAlign='center';ctx.fillText(p.sym,0,0);ctx.restore();}requestAnimationFrame(draw);}draw();})();
+const user=localStorage.getItem('user');if(!user)window.location.href='index.html';
 
-const user=localStorage.getItem('user');
-if(!user)window.location.href='index.html';
-document.getElementById('sname').textContent=user;
+(function(){
+  const c=document.getElementById('dust'),ctx=c.getContext('2d');
+  let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const spotXs=[.18,.50,.82];const motes=[];
+  for(let i=0;i<80;i++)motes.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.6+.25,vx:(Math.random()-.5)*.22,vy:-(Math.random()*.24+.04),a:Math.random()*.14+.022,phase:Math.random()*Math.PI*2,freq:Math.random()*.006+.002});
+  let t=0;
+  function draw(){ctx.clearRect(0,0,W,H);t+=.009;
+    for(const m of motes){
+      m.x+=m.vx+Math.sin(t*m.freq+m.phase)*.32;m.y+=m.vy;
+      if(m.y<-5){m.y=H+5;m.x=Math.random()*W;}if(m.x<0)m.x=W;if(m.x>W)m.x=0;
+      let alpha=m.a;
+      if(m.y>H*.22&&m.y<H*.74){for(const sx of spotXs){const cx=sx*W,coneW=95,dx=Math.abs(m.x-cx);if(dx<coneW){const frac=1-dx/coneW,yfrac=Math.max(0,1-(m.y-H*.22)/(H*.52)*.7);alpha=Math.min(.78,alpha+frac*yfrac*.38);}}}
+      ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);ctx.fillStyle='rgba(240,220,155,'+alpha+')';ctx.fill();
+    }requestAnimationFrame(draw);}draw();
+})();
+const rceil=document.getElementById('rceil'),rfloor=document.getElementById('rfloor'),rwall=document.getElementById('rwall');
+let tk=false;window.addEventListener('scroll',()=>{if(!tk){requestAnimationFrame(()=>{const sy=window.scrollY;if(rceil)rceil.style.transform='translateY('+(sy*.05)+'px)';if(rfloor)rfloor.style.transform='translateY('+(-sy*.12)+'px)';if(rwall)rwall.style.transform='translateY('+(sy*.02)+'px)';tk=false;});tk=true;}},{passive:true});
 
-// Notif check
-function checkNotif(){
-  const msgs=JSON.parse(localStorage.getItem('msgs'))||[];
-  const lastRead=parseInt(localStorage.getItem('lastRead_'+user)||'0');
-  const nm=msgs.filter(m=>m.sender!==user&&m.ts>lastRead);
-  const b=document.getElementById('notif-banner');
-  if(nm.length>0){b.classList.add('show');document.getElementById('notif-title').textContent=nm.length===1?`${nm[nm.length-1].sender} sent you a letter ♥`:`${nm.length} new letters are waiting for you`;}
-  else b.classList.remove('show');
-}
-checkNotif();
-setInterval(checkNotif,4000);
-
-const msgEl=document.getElementById('msg');
-msgEl.addEventListener('input',()=>{const l=msgEl.value.length;const el=document.getElementById('cc');el.textContent=l+' / 800';el.style.color=l>720?'#c97a7a':'var(--muted)';});
-msgEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))sendMsg();});
-
-function sendMsg(){
-  const text=msgEl.value.trim();if(!text)return;
-  const msgs=JSON.parse(localStorage.getItem('msgs'))||[];
-  const ts=Date.now();
-  msgs.push({text,sender:user,ts,time:new Date().toLocaleString()});
-  localStorage.setItem('msgs',JSON.stringify(msgs));
-  localStorage.setItem('lastRead_'+user,String(ts));
-  msgEl.value='';document.getElementById('cc').textContent='0 / 800';
-  showToast('your letter has been sent ♥');
-}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function goHome(){window.location.href='home.html';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+
+document.getElementById('sn').textContent=user;
+function checkN(){const msgs=JSON.parse(localStorage.getItem('msgs'))||[];const lr=parseInt(localStorage.getItem('lastRead_'+user)||'0');const nm=msgs.filter(m=>m.sender!==user&&m.ts>lr);const b=document.getElementById('nb');if(nm.length>0){b.classList.add('show');document.getElementById('nt').textContent=nm.length===1?nm[nm.length-1].sender+' sent you a letter ♥':nm.length+' new letters are waiting';}else b.classList.remove('show');}
+checkN();setInterval(checkN,4000);
+const msgEl=document.getElementById('msg');
+msgEl.addEventListener('input',()=>{const l=msgEl.value.length;const el=document.getElementById('cc');el.textContent=l+' / 800';el.style.color=l>720?'#a07050':'rgba(160,130,70,.4)';});
+msgEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))sendMsg();});
+function sendMsg(){const text=msgEl.value.trim();if(!text)return;const msgs=JSON.parse(localStorage.getItem('msgs'))||[];const ts=Date.now();msgs.push({text,sender:user,ts,time:new Date().toLocaleString()});localStorage.setItem('msgs',JSON.stringify(msgs));localStorage.setItem('lastRead_'+user,String(ts));msgEl.value='';document.getElementById('cc').textContent='0 / 800';showToast('your letter has been sent ♥');}
+
 </script>
 </body>
 </html>
