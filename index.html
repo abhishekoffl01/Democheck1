@@ -3,106 +3,626 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to Our World</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<title>Our World</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#160808; --surface:#1e0d0d; --surface2:#26100f;
-  --blush:#e8b4b8; --rose:#c97b84; --deep-rose:#8b3a42;
-  --cream:#f5ede4; --cream2:#ede0d4;
-  --text:#f0e4dc; --muted:#8a6a68; --border:rgba(232,180,184,0.15);
-  --glow:rgba(201,123,132,0.14);
-}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
-body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;}
-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.bg-warm{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 60% 70% at 50% 100%,rgba(120,40,30,0.6) 0%,transparent 65%),
-    radial-gradient(ellipse 80% 40% at 20% 0%,rgba(80,20,20,0.4) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 20%,rgba(60,15,25,0.35) 0%,transparent 55%);}
-.candle-glow{position:fixed;bottom:-60px;left:50%;transform:translateX(-50%);width:500px;height:300px;
-  background:radial-gradient(ellipse,rgba(255,140,60,0.12) 0%,rgba(200,80,30,0.06) 40%,transparent 70%);
-  border-radius:50%;animation:flicker 3s ease-in-out infinite alternate;z-index:0;pointer-events:none;}
-@keyframes flicker{0%{transform:translateX(-50%) scale(1);opacity:.8;}40%{transform:translateX(-50%) scaleX(1.05) scaleY(.96);opacity:1;}70%{transform:translateX(-50%) scaleX(.97) scaleY(1.03);opacity:.85;}100%{transform:translateX(-50%) scaleX(1.02) scaleY(.98);opacity:.9;}}
-.card{position:relative;z-index:10;width:min(420px,92vw);
-  background:linear-gradient(170deg,rgba(35,14,14,.97),rgba(22,8,10,.99));
-  border:1px solid var(--border);border-radius:3px;padding:56px 48px 48px;text-align:center;
-  backdrop-filter:blur(20px);
-  box-shadow:0 0 60px rgba(180,80,80,.12),0 40px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(232,180,184,.12);
-  animation:cardRise 1.2s cubic-bezier(.22,1,.36,1) both;}
-.card::before,.card::after{content:'❧';position:absolute;font-size:16px;color:var(--rose);opacity:.22;}
-.card::before{top:14px;left:18px;transform:rotate(-30deg);}
-.card::after{bottom:14px;right:18px;transform:rotate(150deg);}
-@keyframes cardRise{from{opacity:0;transform:translateY(50px) scale(.95);filter:blur(6px);}to{opacity:1;transform:none;filter:none;}}
-.heart{font-size:32px;margin:0 auto 22px;animation:heartbeat 2.8s ease-in-out infinite;display:block;line-height:1;filter:drop-shadow(0 0 12px rgba(200,100,100,.5));}
-@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.15);}28%{transform:scale(1);}42%{transform:scale(1.08);}56%{transform:scale(1);}}
-.card-eyebrow{font-family:'Dancing Script',cursive;font-size:15px;color:var(--rose);opacity:.75;letter-spacing:.05em;margin-bottom:8px;animation:fadeUp 1s ease .3s both;}
-.card-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:400;line-height:1.15;color:var(--cream);letter-spacing:.01em;margin-bottom:6px;animation:fadeUp 1s ease .4s both;}
-.card-title em{font-style:italic;color:var(--blush);}
-.card-subtitle{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:36px;letter-spacing:.06em;animation:fadeUp 1s ease .5s both;}
-.divider{display:flex;align-items:center;gap:12px;margin-bottom:30px;animation:fadeUp 1s ease .55s both;}
-.divider-line{flex:1;height:1px;background:var(--border);}
-.divider-heart{font-size:10px;color:var(--rose);opacity:.5;}
-.field{margin-bottom:16px;text-align:left;animation:fadeUp 1s ease both;}
-.field:nth-child(1){animation-delay:.62s;}.field:nth-child(2){animation-delay:.70s;}
-.field label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.field input{width:100%;background:rgba(255,240,235,.04);border:none;border-bottom:1px solid rgba(232,180,184,.25);padding:12px 4px;font-family:'Lato',sans-serif;font-size:15px;color:var(--cream);outline:none;letter-spacing:.04em;transition:border-color .3s;}
-.field input::placeholder{color:var(--muted);font-style:italic;}
-.field input:focus{border-bottom-color:var(--rose);}
-.error{font-size:12px;color:#d47a7a;font-style:italic;margin-bottom:14px;min-height:16px;text-align:center;letter-spacing:.04em;opacity:0;transition:opacity .3s;}
-.error.show{opacity:1;animation:shake .4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
-.enter-btn{width:100%;padding:15px;background:transparent;border:1px solid var(--rose);border-radius:2px;font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--blush);cursor:pointer;position:relative;overflow:hidden;transition:color .4s,box-shadow .4s;animation:fadeUp 1s ease .78s both;letter-spacing:.06em;}
-.enter-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,123,132,.18),rgba(139,58,66,.12));transform:translateX(-101%);transition:transform .4s cubic-bezier(.22,1,.36,1);}
-.enter-btn:hover{color:var(--cream);box-shadow:0 0 30px rgba(201,123,132,.2);}
+body{font-family:'Cormorant Garamond',serif;background:#0a0502;}
+
+/* ═══════════════════════════════
+   SCENE — 3D perspective room
+═══════════════════════════════ */
+.scene{
+  position:fixed;inset:0;
+  perspective:900px;
+  perspective-origin:50% 42%;
+  overflow:hidden;
+}
+
+/* Room box - the actual 3D container */
+.room{
+  position:absolute;inset:0;
+  transform-style:preserve-3d;
+  animation:roomEnter 2.8s cubic-bezier(.16,1,.3,1) 0.6s both;
+}
+@keyframes roomEnter{
+  0%  {transform:translateZ(-320px) scale(.7);filter:brightness(.2) blur(12px);}
+  60% {filter:brightness(.75) blur(2px);}
+  100%{transform:translateZ(0px) scale(1);filter:brightness(1) blur(0);}
+}
+
+/* ── BACK WALL ── */
+.wall-back{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 30%, #c8b898 0%, #b8a880 30%, #9a8c6a 70%, #7a6e50 100%);
+  /* Wall texture via SVG filter */
+  filter:url(#wallgrain);
+}
+.wall-back::before{
+  /* Wainscoting panel - lower third */
+  content:'';position:absolute;left:0;right:0;bottom:0;
+  height:32%;
+  background:
+    linear-gradient(to top,
+      #5a4020 0px,#6a5030 8px,#7a5e38 18px,
+      #8a6e48 30px,#9a7e58 50%,
+      rgba(120,100,70,.3) 100%
+    );
+  border-top:3px solid #a08050;
+}
+.wall-back::after{
+  /* Ambient occlusion corners */
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(30,15,5,.55) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(30,15,5,.55) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(20,10,3,.7) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 20% at 50% 100%, rgba(10,5,2,.8) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+/* ── CEILING ── */
+.ceiling{
+  position:absolute;top:0;left:0;right:0;
+  height:28%;
+  background:
+    linear-gradient(to bottom,
+      #1a0c04 0%,
+      #2a1608 18%,
+      #3a2010 32%,
+      #4a2c14 45%,
+      rgba(80,45,15,.6) 70%,
+      transparent 100%
+    );
+  transform-origin:top center;
+  transform:rotateX(0deg);
+}
+/* Wood grain beams */
+.ceiling::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.25) 0px, rgba(0,0,0,.25) 2px,
+      transparent 2px, transparent calc(100%/7 - 2px),
+      rgba(255,200,100,.04) calc(100%/7 - 2px), rgba(255,200,100,.04) calc(100%/7)
+    ),
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,.1) 0px, rgba(0,0,0,.1) 1px,
+      transparent 1px, transparent 18px
+    );
+}
+/* Ceiling warm glow bounce */
+.ceiling::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(255,180,80,.08) 0%,transparent 70%);
+}
+
+/* ── FLOOR ── */
+.floor{
+  position:absolute;bottom:0;left:0;right:0;
+  height:28%;
+  transform-origin:bottom center;
+  overflow:hidden;
+}
+.floor-surface{
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,
+      #6a4820 0px, #7a5830 58px,
+      #5e3e18 58px, #6a4820 60px,
+      #8a6840 60px, #9a7850 118px,
+      #6a4820 118px, #6a4820 120px
+    ),
+    linear-gradient(to top,
+      #2a1408 0%,#4a2c14 15%,#7a5030 40%,
+      #9a7050 65%,#b09070 85%,#c0a880 100%
+    );
+  background-blend-mode:multiply;
+}
+/* Floor reflection/sheen */
+.floor-sheen{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,
+    rgba(255,200,120,.12) 0%,rgba(255,220,160,.05) 30%,transparent 60%
+  );
+  animation:floorSheen 6s ease-in-out infinite alternate;
+}
+@keyframes floorSheen{0%{opacity:.5;}100%{opacity:1;}}
+/* Floor perspective shadow from wall */
+.floor-shadow{
+  position:absolute;top:0;left:0;right:0;height:40%;
+  background:linear-gradient(to bottom,rgba(20,10,4,.4),transparent);
+}
+
+/* ── LEFT WALL ── */
+.wall-left{
+  position:absolute;top:0;bottom:0;left:0;
+  width:22%;
+  background:linear-gradient(to right,
+    #5a3c18 0%,#7a5428 20%,#9a7048 40%,
+    #b08858 60%,rgba(176,136,88,.6) 80%,transparent 100%
+  );
+  transform-origin:left center;
+}
+.wall-left::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,
+    rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,
+    transparent 1px,transparent 22px
+  );
+}
+
+/* ── RIGHT WALL ── */
+.wall-right{
+  position:absolute;top:0;bottom:0;right:0;
+  width:22%;
+  background:linear-gradient(to left,
+    #5a3c18 0%,#7a5428 20%,#9a7048 40%,
+    #b08858 60%,rgba(176,136,88,.6) 80%,transparent 100%
+  );
+}
+.wall-right::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,
+    rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,
+    transparent 1px,transparent 22px
+  );
+}
+
+/* ── TRACK LIGHTING RAIL ── */
+.track-rail{
+  position:absolute;top:28%;left:5%;right:5%;
+  height:8px;
+  background:linear-gradient(to bottom,#1a0e06,#2a1a0a,#1a0e06);
+  border-radius:4px;
+  box-shadow:0 2px 8px rgba(0,0,0,.6),0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* ── SPOT LIGHTS ── */
+.spot{
+  position:absolute;
+  top:calc(28% + 8px);
+  transform:translateX(-50%);
+}
+.spot-head{
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#f0e8c0,#c0a060 50%,#604020);
+  box-shadow:0 0 4px rgba(240,220,160,.3),0 2px 4px rgba(0,0,0,.7);
+  margin:0 auto;
+}
+.spot-cone{
+  width:var(--sw,180px);
+  height:var(--sh,48vh);
+  margin-left:calc(var(--sw,180px) / -2 + 7px);
+  background:linear-gradient(to bottom,
+    rgba(255,230,140,.13) 0%,
+    rgba(255,210,100,.07) 20%,
+    rgba(255,190,80,.03) 45%,
+    transparent 80%
+  );
+  clip-path:polygon(35% 0%,65% 0%,100% 100%,0% 100%);
+  animation:spotFlicker var(--sd,4s) ease-in-out infinite alternate;
+  transform-origin:top center;
+}
+@keyframes spotFlicker{
+  0%  {opacity:.6;transform:scaleX(1);}
+  25% {opacity:.9;transform:scaleX(1.03);}
+  50% {opacity:.7;transform:scaleX(.98);}
+  75% {opacity:.95;transform:scaleX(1.02);}
+  100%{opacity:.65;transform:scaleX(1);}
+}
+/* Pool of light on floor */
+.spot-pool{
+  position:absolute;
+  bottom:28%;
+  transform:translateX(-50%);
+  width:var(--pw,120px);height:30px;
+  background:radial-gradient(ellipse,rgba(255,220,140,.15) 0%,transparent 70%);
+  border-radius:50%;
+  animation:poolFlicker var(--sd,4s) ease-in-out infinite alternate;
+}
+@keyframes poolFlicker{0%{opacity:.5;}50%{opacity:.9;}100%{opacity:.6;}}
+
+/* ── WALL SCONCES (candles) ── */
+.sconce{
+  position:absolute;
+  width:24px;
+}
+.sconce-body{
+  width:12px;height:28px;margin:0 auto;
+  background:linear-gradient(to bottom,#8a6030,#6a4020);
+  border-radius:2px 2px 0 0;
+  box-shadow:2px 0 6px rgba(0,0,0,.5);
+  position:relative;
+}
+.sconce-body::before{
+  content:'';position:absolute;bottom:0;left:-4px;right:-4px;height:5px;
+  background:#4a2810;border-radius:0 0 4px 4px;
+}
+.candle-flame{
+  width:8px;height:14px;margin:0 auto -2px;
+  background:radial-gradient(ellipse 60% 100% at 50% 80%,
+    #fff8e0 0%,#ffcc40 30%,#ff8800 60%,rgba(255,60,0,.4) 80%,transparent 100%
+  );
+  border-radius:50% 50% 30% 30%;
+  animation:candleFlicker 1.8s ease-in-out infinite alternate;
+  transform-origin:bottom center;
+  position:relative;z-index:2;
+}
+@keyframes candleFlicker{
+  0%  {transform:scaleX(1) scaleY(1) rotate(-1deg);filter:brightness(1);}
+  20% {transform:scaleX(.9) scaleY(1.1) rotate(1.5deg);filter:brightness(1.2);}
+  50% {transform:scaleX(1.1) scaleY(.9) rotate(-2deg);filter:brightness(.85);}
+  80% {transform:scaleX(.85) scaleY(1.15) rotate(2deg);filter:brightness(1.1);}
+  100%{transform:scaleX(1) scaleY(1) rotate(0deg);filter:brightness(.95);}
+}
+.candle-glow{
+  position:absolute;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  animation:candleGlow 1.8s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+@keyframes candleGlow{
+  0%  {opacity:.6;transform:translate(-50%,-50%) scale(1);}
+  50% {opacity:.9;transform:translate(-50%,-50%) scale(1.15);}
+  100%{opacity:.65;transform:translate(-50%,-50%) scale(.95);}
+}
+
+/* ── SVG FILTER for wall grain ── */
+
+/* ── ENTRANCE DOOR ── */
+.door-wrap{
+  position:absolute;
+  left:50%;top:28%;
+  transform:translate(-50%,0);
+  width:180px;
+  height:72%;
+  z-index:10;
+  animation:doorPullback 1.4s cubic-bezier(.4,0,.2,1) 1.2s forwards;
+}
+@keyframes doorPullback{
+  0%  {transform:translate(-50%,0) scale(1) translateZ(0);}
+  100%{transform:translate(-50%,0) scale(0) translateZ(-200px);opacity:0;pointer-events:none;}
+}
+.door-arch-frame{
+  position:absolute;inset:-8px -12px;
+  background:linear-gradient(to bottom,#3a2010,#2a1608);
+  border-radius:50% 50% 0 0 / 20% 20% 0 0;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.5),4px 0 12px rgba(0,0,0,.4),-4px 0 12px rgba(0,0,0,.4);
+}
+.door-arch-frame::before{
+  content:'';position:absolute;inset:6px;
+  border:2px solid rgba(160,120,60,.25);
+  border-radius:48% 48% 0 0 / 18% 18% 0 0;
+}
+.door-panel-l,.door-panel-r{
+  position:absolute;top:0;bottom:0;width:50%;
+  overflow:hidden;
+  background:linear-gradient(160deg,#3a2010,#2a1608,#321a0c);
+}
+.door-panel-l{
+  left:0;border-right:1px solid rgba(0,0,0,.5);
+  transform-origin:left center;
+  animation:openDoorL 1.2s cubic-bezier(.4,0,.2,1) 0.6s both;
+}
+.door-panel-r{
+  right:0;border-left:1px solid rgba(0,0,0,.5);
+  transform-origin:right center;
+  animation:openDoorR 1.2s cubic-bezier(.4,0,.2,1) 0.6s both;
+}
+@keyframes openDoorL{
+  0%  {transform:perspective(500px) rotateY(0deg);}
+  100%{transform:perspective(500px) rotateY(-88deg);}
+}
+@keyframes openDoorR{
+  0%  {transform:perspective(500px) rotateY(0deg);}
+  100%{transform:perspective(500px) rotateY(88deg);}
+}
+/* Door wood grain */
+.door-panel-l::before,.door-panel-r::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0px,transparent 20px,
+      rgba(0,0,0,.1) 20px,rgba(0,0,0,.1) 21px
+    ),
+    repeating-linear-gradient(0deg,
+      rgba(255,200,100,.02) 0px,rgba(255,200,100,.02) 1px,
+      transparent 1px,transparent 6px
+    );
+}
+.door-panel-l::after{
+  content:'';position:absolute;inset:16px 12px;border:1px solid rgba(160,120,60,.12);border-radius:1px;
+}
+.door-panel-r::after{
+  content:'';position:absolute;inset:16px 12px;border:1px solid rgba(160,120,60,.12);border-radius:1px;
+}
+.door-knob-l{
+  position:absolute;top:45%;right:8px;
+  width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f0d880,#c0a040 50%,#806020);
+  box-shadow:0 0 4px rgba(200,160,60,.4),0 1px 3px rgba(0,0,0,.6);
+}
+.door-knob-r{
+  position:absolute;top:45%;left:8px;
+  width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f0d880,#c0a040 50%,#806020);
+  box-shadow:0 0 4px rgba(200,160,60,.4),0 1px 3px rgba(0,0,0,.6);
+}
+/* Warm light from inside room as door opens */
+.door-light{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 100% at 50% 60%,rgba(255,180,80,.15),transparent 70%);
+  opacity:0;animation:doorLightIn .8s ease 1s forwards;
+}
+@keyframes doorLightIn{to{opacity:1;}}
+
+/* ── CANVAS for dust motes ── */
+canvas.dust{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  opacity:0;animation:dustFadeIn 1.5s ease 2.5s forwards;
+}
+@keyframes dustFadeIn{to{opacity:1;}}
+
+/* ── LOGIN CARD ── */
+.login-wrap{
+  position:absolute;inset:0;z-index:20;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;animation:loginIn 1s ease 3s forwards;
+}
+@keyframes loginIn{to{opacity:1;}}
+
+.card{
+  background:rgba(245,238,225,.96);
+  border:1px solid rgba(120,90,40,.2);
+  border-radius:2px;
+  padding:48px 44px 40px;
+  width:min(400px,88vw);
+  text-align:center;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.06),
+    0 8px 24px rgba(0,0,0,.14),
+    0 24px 60px rgba(0,0,0,.22),
+    0 0 80px rgba(200,160,80,.06),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  position:relative;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:15%;right:15%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(160,120,50,.5),transparent);
+}
+.card::after{
+  content:'';position:absolute;inset:12px;
+  border:1px solid rgba(120,90,40,.06);border-radius:1px;pointer-events:none;
+}
+.c-rose{font-size:30px;margin:0 auto 18px;display:block;animation:rosePulse 3s ease-in-out infinite;}
+@keyframes rosePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.c-eyebrow{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:#8a7050;margin-bottom:10px;}
+.c-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;line-height:1.15;color:#2a1e0e;margin-bottom:6px;}
+.c-title em{font-style:italic;color:#9a7030;}
+.c-sub{font-family:'Dancing Script',cursive;font-size:15px;color:#8a7050;margin-bottom:28px;}
+.c-div{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.c-div-line{flex:1;height:1px;background:rgba(120,90,40,.15);}
+.c-div-dot{font-size:10px;color:#c97b84;opacity:.6;}
+.field{margin-bottom:16px;text-align:left;}
+.field label{display:block;font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:#8a7050;margin-bottom:8px;}
+.field input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(120,90,40,.22);padding:10px 3px;font-family:'Cormorant Garamond',serif;font-size:16px;color:#2a1e0e;outline:none;transition:border-color .3s;}
+.field input::placeholder{color:rgba(120,90,40,.4);font-style:italic;}
+.field input:focus{border-bottom-color:rgba(160,120,50,.6);}
+.err{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:#a05050;margin-bottom:12px;min-height:18px;opacity:0;transition:opacity .3s;}
+.err.show{opacity:1;animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+.enter-btn{width:100%;padding:13px;background:transparent;border:1px solid rgba(140,100,40,.4);border-radius:1px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:#5a3e18;cursor:pointer;position:relative;overflow:hidden;transition:color .4s,box-shadow .4s;}
+.enter-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,140,60,.15),rgba(120,80,20,.1));transform:translateX(-101%);transition:transform .4s cubic-bezier(.22,1,.36,1);}
+.enter-btn:hover{color:#2a1e0e;box-shadow:0 0 20px rgba(180,140,60,.18);}
 .enter-btn:hover::before{transform:translateX(0);}
 .enter-btn span{position:relative;z-index:1;}
-.card-note{margin-top:22px;font-family:'Dancing Script',cursive;font-size:14px;color:var(--muted);animation:fadeUp 1s ease .88s both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.c-note{margin-top:18px;font-family:'Dancing Script',cursive;font-size:14px;color:#8a7050;}
+
+/* Welcome text above door */
+.welcome-above{
+  position:absolute;
+  top:calc(28% - 70px);
+  left:50%;transform:translateX(-50%);
+  text-align:center;
+  white-space:nowrap;
+  opacity:0;animation:welcomeIn .8s ease .2s forwards;
+  z-index:11;
+}
+@keyframes welcomeIn{to{opacity:1;}}
+.w1{display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.8vw,22px);font-style:italic;font-weight:300;color:rgba(230,215,190,.7);letter-spacing:.08em;}
+.w2{display:block;font-family:'Dancing Script',cursive;font-size:clamp(12px,2vw,16px);color:rgba(200,160,80,.4);letter-spacing:.12em;margin-top:4px;}
+
+/* Vignette overlay */
+.vignette{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(8,4,2,.6) 100%);
+}
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div class="bg-warm"></div>
-<div class="candle-glow"></div>
-<div class="card">
-  <span class="heart">🌹</span>
-  <div class="card-eyebrow">just the two of us</div>
-  <h1 class="card-title">Welcome to<br><em>Our World</em></h1>
-  <p class="card-subtitle">a place that will always be ours</p>
-  <div class="divider"><div class="divider-line"></div><span class="divider-heart">♥</span><div class="divider-line"></div></div>
-  <div class="field"><label>Who are you?</label><input id="user" type="text" placeholder="person1 or person2" onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()"></div>
-  <div class="field"><label>Our secret</label><input id="pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
-  <div class="error" id="error">That doesn't feel right. Try again, love.</div>
-  <button class="enter-btn" id="btn" onclick="login()"><span>Come in ♥</span></button>
-  <p class="card-note">Only us, always.</p>
-</div>
+
+<svg style="position:absolute;width:0;height:0">
+  <defs>
+    <filter id="wallgrain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blend"/>
+      <feComponentTransfer in="blend">
+        <feFuncR type="linear" slope="1.02" intercept="0.01"/>
+        <feFuncG type="linear" slope="0.98" intercept="0.01"/>
+        <feFuncB type="linear" slope="0.94" intercept="0"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
+
+<div class="scene">
+  <div class="room">
+
+    <!-- Walls -->
+    <div class="wall-back"></div>
+    <div class="wall-left"></div>
+    <div class="wall-right"></div>
+
+    <!-- Ceiling -->
+    <div class="ceiling"></div>
+
+    <!-- Floor -->
+    <div class="floor">
+      <div class="floor-surface"></div>
+      <div class="floor-sheen"></div>
+      <div class="floor-shadow"></div>
+    </div>
+
+    <!-- Track rail -->
+    <div class="track-rail"></div>
+
+    <!-- Spot lights -->
+    <div class="spot" style="left:20%">
+      <div class="spot-head"></div>
+      <div class="spot-cone" style="--sw:160px;--sh:46vh;--sd:4.2s"></div>
+    </div>
+    <div class="spot" style="left:38%">
+      <div class="spot-head"></div>
+      <div class="spot-cone" style="--sw:170px;--sh:50vh;--sd:5.8s"></div>
+    </div>
+    <div class="spot" style="left:62%">
+      <div class="spot-head"></div>
+      <div class="spot-cone" style="--sw:170px;--sh:50vh;--sd:3.9s"></div>
+    </div>
+    <div class="spot" style="left:80%">
+      <div class="spot-head"></div>
+      <div class="spot-cone" style="--sw:160px;--sh:46vh;--sd:6.2s"></div>
+    </div>
+
+    <!-- Light pools on floor -->
+    <div class="spot-pool" style="left:20%;--pw:110px;--sd:4.2s"></div>
+    <div class="spot-pool" style="left:38%;--pw:125px;--sd:5.8s"></div>
+    <div class="spot-pool" style="left:62%;--pw:125px;--sd:3.9s"></div>
+    <div class="spot-pool" style="left:80%;--pw:110px;--sd:6.2s"></div>
+
+    <!-- Wall sconces -->
+    <div class="sconce" style="position:absolute;left:10%;top:45%">
+      <div class="candle-flame"></div>
+      <div class="sconce-body"></div>
+      <div class="candle-glow" style="left:calc(10% + 12px);top:45%;width:60px;height:60px;background:radial-gradient(circle,rgba(255,160,40,.18) 0%,transparent 70%);animation-delay:.3s"></div>
+    </div>
+    <div class="sconce" style="position:absolute;right:10%;top:45%">
+      <div class="candle-flame" style="animation-delay:.7s"></div>
+      <div class="sconce-body"></div>
+      <div class="candle-glow" style="right:calc(10% + 12px);left:auto;top:45%;width:60px;height:60px;background:radial-gradient(circle,rgba(255,160,40,.18) 0%,transparent 70%);animation-delay:.7s"></div>
+    </div>
+
+    <!-- Candle glow halos on wall -->
+    <div style="position:absolute;left:calc(10% - 20px);top:calc(45% - 30px);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,60,.12) 0%,transparent 65%);pointer-events:none;animation:candleGlow 1.8s ease-in-out infinite alternate"></div>
+    <div style="position:absolute;right:calc(10% - 20px);top:calc(45% - 30px);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,60,.12) 0%,transparent 65%);pointer-events:none;animation:candleGlow 1.8s ease-in-out infinite alternate;animation-delay:.7s"></div>
+
+    <!-- Welcome text above door -->
+    <div class="welcome-above">
+      <span class="w1">Welcome to our world</span>
+      <span class="w2">a place that belongs to us, forever</span>
+    </div>
+
+    <!-- Door -->
+    <div class="door-wrap">
+      <div class="door-arch-frame"></div>
+      <div class="door-light"></div>
+      <div class="door-panel-l"><div class="door-knob-l"></div></div>
+      <div class="door-panel-r"><div class="door-knob-r"></div></div>
+    </div>
+
+    <!-- Dust motes canvas -->
+    <canvas class="dust" id="dust"></canvas>
+
+    <!-- Vignette -->
+    <div class="vignette"></div>
+
+    <!-- Login -->
+    <div class="login-wrap">
+      <div class="card">
+        <span class="c-rose">🌹</span>
+        <div class="c-eyebrow">Private Gallery</div>
+        <h1 class="c-title">Welcome to<br><em>Our World</em></h1>
+        <p class="c-sub">a place that will always be ours</p>
+        <div class="c-div"><div class="c-div-line"></div><span class="c-div-dot">♥</span><div class="c-div-line"></div></div>
+        <div class="field"><label>Who are you</label><input id="user" type="text" placeholder="person1 or person2" onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()"></div>
+        <div class="field"><label>Our secret</label><input id="pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+        <div class="err" id="err">That doesn't feel right. Try again.</div>
+        <button class="enter-btn" id="ebtn" onclick="login()"><span>Enter the Gallery</span></button>
+        <p class="c-note">Only us · always</p>
+      </div>
+    </div>
+
+  </div><!-- .room -->
+</div><!-- .scene -->
+
 <script>
+// Dust motes
 (function(){
-  const c=document.getElementById('c'),ctx=c.getContext('2d');
-  let W,H;
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  const c=document.getElementById('dust');
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
   resize();window.addEventListener('resize',resize);
-  const S=['❤','♥','·','·','·','✦','·'],ps=[];
-  for(let i=0;i<55;i++)ps.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight+window.innerHeight,sym:S[Math.floor(Math.random()*S.length)],size:Math.random()*10+5,speed:Math.random()*.5+.2,drift:(Math.random()-.5)*.4,alpha:Math.random()*.25+.05,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.012,phase:Math.random()*Math.PI*2,sway:Math.random()*.6+.2});
+  const ctx=c.getContext('2d');
+  const motes=[];
+  for(let i=0;i<80;i++){
+    motes.push({
+      x:Math.random()*window.innerWidth,
+      y:Math.random()*window.innerHeight,
+      r:Math.random()*1.8+.3,
+      vx:(Math.random()-.5)*.25,
+      vy:-(Math.random()*.3+.05),
+      a:Math.random()*.18+.03,
+      phase:Math.random()*Math.PI*2,
+      freq:Math.random()*.008+.003
+    });
+  }
+  // Spotlight x positions for extra dust density
+  const spotXs=[.2,.38,.62,.80];
   let t=0;
-  function draw(){ctx.clearRect(0,0,W,H);t+=.012;for(const p of ps){p.y-=p.speed;p.x+=Math.sin(t*p.sway+p.phase)*p.drift;p.rot+=p.rotSpeed;if(p.y<-30){p.y=H+20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font=p.size+'px serif';ctx.fillStyle=(p.sym==='·'||p.sym==='✦')?'rgba(240,220,210,1)':'rgba(210,120,130,1)';ctx.textAlign='center';ctx.fillText(p.sym,0,0);ctx.restore();}requestAnimationFrame(draw);}
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    t+=.01;
+    for(const m of motes){
+      m.x+=m.vx+Math.sin(t*m.freq+m.phase)*.4;
+      m.y+=m.vy;
+      if(m.y<-5){m.y=c.height+5;m.x=Math.random()*c.width;}
+      if(m.x<0)m.x=c.width;if(m.x>c.width)m.x=0;
+      // Brighter in spotlight cones
+      let alpha=m.a;
+      for(const sx of spotXs){
+        const cx=sx*c.width;
+        const coneW=90;
+        if(Math.abs(m.x-cx)<coneW&&m.y>c.height*.28){
+          const frac=1-Math.abs(m.x-cx)/coneW;
+          alpha=Math.min(.7,alpha+frac*.35);
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(m.x,m.y,m.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(240,220,160,${alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
   draw();
 })();
+
 function login(){
   const u=document.getElementById('user').value.trim();
   const p=document.getElementById('pass').value;
-  const err=document.getElementById('error');
+  const err=document.getElementById('err');
   err.classList.remove('show');
   if((u==='person1'||u==='person2')&&p==='1234'){
-    document.getElementById('btn').querySelector('span').textContent='Opening our world…';
+    document.getElementById('ebtn').querySelector('span').textContent='Opening the gallery…';
     localStorage.setItem('user',u);
     setTimeout(()=>window.location.href='home.html',900);
-  } else {
+  }else{
     document.getElementById('pass').value='';
-    void err.offsetWidth;
-    err.classList.add('show');
+    void err.offsetWidth;err.classList.add('show');
   }
 }
 </script>
