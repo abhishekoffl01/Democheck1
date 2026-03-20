@@ -4,185 +4,194 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PostBox · Our World</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#160808;--surface:#1e0d0d;--blush:#e8b4b8;--rose:#c97b84;--cream:#f5ede4;--cream2:#ede0d4;--text:#f0e4dc;--muted:#8a6a68;--border:rgba(232,180,184,0.15);
-  --parch:#f0e6c8;--parch2:#e6d8a8;--parch3:#d8c890;--ink:#1e1408;--ink2:#2e1e0c;--ink-fade:#6a5030;}
+/* ROOM.CSS — paste this <style> block into message/postbox/calendar/gallery */
+/* Warm wood museum room — self contained */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap');
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.bg-warm{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 110%,rgba(100,30,30,.5) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 0% 0%,rgba(60,18,18,.3) 0%,transparent 55%);}
+html,body{overflow-x:hidden;}
+body{font-family:'Cormorant Garamond',serif;background:#0a0502;color:#2a1e0e;min-height:100vh;}
 
-.page{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;}
+.room-wall{position:fixed;inset:0;z-index:0;will-change:transform;
+  background:radial-gradient(ellipse 95% 65% at 50% 28%,#c4b490 0%,#b0a278 25%,#948a64 55%,#786e50 80%,#605840 100%);}
+.room-wall::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 35% 100% at 0% 50%,rgba(25,12,4,.58) 0%,transparent 65%),radial-gradient(ellipse 35% 100% at 100% 50%,rgba(25,12,4,.58) 0%,transparent 65%),radial-gradient(ellipse 100% 25% at 50% 0%,rgba(15,8,2,.68) 0%,transparent 55%),radial-gradient(ellipse 100% 18% at 50% 100%,rgba(8,4,1,.78) 0%,transparent 60%);}
+.room-wall::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28%;
+  background:linear-gradient(to top,#3c2610 0px,#4e3218 12px,#624020 24px,#7a5230 40px,#8a6040 55%,rgba(130,90,55,.25) 100%);
+  border-top:2px solid rgba(160,120,70,.38);}
 
-/* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:22px 52px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.room-ceiling{position:fixed;top:0;left:0;right:0;z-index:10;height:22vh;will-change:transform;
+  background:linear-gradient(to bottom,#0e0704 0%,#1c0e06 20%,#2c1a0a 45%,#3c2412 65%,rgba(60,34,14,.4) 85%,transparent 100%);}
+.room-ceiling::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0px,rgba(0,0,0,.28) 3px,transparent 3px,transparent calc(100%/8 - 3px),rgba(0,0,0,.18) calc(100%/8 - 3px),rgba(0,0,0,.18) calc(100%/8)),repeating-linear-gradient(0deg,transparent 0px,transparent 28px,rgba(0,0,0,.1) 28px,rgba(0,0,0,.1) 29px);}
+.room-ceiling::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:radial-gradient(ellipse 100% 100% at 50% 100%,rgba(255,180,80,.055) 0%,transparent 70%);}
+
+.track-rail{position:fixed;top:22vh;left:4%;right:4%;z-index:11;height:10px;
+  background:linear-gradient(to bottom,#120a04,#201408,#120a04);border-radius:5px;
+  box-shadow:0 3px 10px rgba(0,0,0,.7),0 6px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.03);}
+
+.room-floor{position:fixed;bottom:0;left:0;right:0;z-index:10;height:26vh;will-change:transform;overflow:hidden;}
+.fp{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#5a3c18 0px,#6a4820 58px,#4e3212 58px,#5a3c18 60px,#7a5830 60px,#8a6840 118px,#5a3c18 118px,#5a3c18 120px),linear-gradient(to top,#1e0e06 0%,#3a2010 18%,#6a4828 42%,#9a7858 68%,#b89070 88%,#c8a880 100%);background-blend-mode:multiply;}
+.fs2{position:absolute;inset:0;background:linear-gradient(to top,rgba(255,210,130,.1) 0%,rgba(255,220,150,.04) 35%,transparent 60%);animation:fs 7s ease-in-out infinite alternate;}
+@keyframes fs{0%{opacity:.4;}100%{opacity:1;}}
+.fao{position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(to bottom,rgba(15,8,2,.42),transparent);}
+
+.baseboard{position:fixed;bottom:26vh;left:0;right:0;z-index:11;height:12px;
+  background:linear-gradient(to top,#1c0e06,#2c1a0a,#1c0e06);
+  box-shadow:0 -3px 10px rgba(0,0,0,.4),0 3px 6px rgba(0,0,0,.3);}
+.baseboard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(180,140,60,.38),transparent);}
+
+.spots-fixed{position:fixed;top:0;left:0;right:0;bottom:0;z-index:3;pointer-events:none;}
+.sp-h{position:absolute;top:calc(22vh + 10px);width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#f0e8c0,#c0a050 55%,#504020);transform:translateX(-50%);box-shadow:0 0 5px rgba(240,220,140,.28),0 2px 5px rgba(0,0,0,.8);}
+.sp-c{position:absolute;top:calc(22vh + 20px);transform:translateX(-50%);width:190px;height:52vh;background:linear-gradient(to bottom,rgba(255,235,150,.1) 0%,rgba(255,215,110,.055) 22%,rgba(255,195,80,.022) 48%,transparent 78%);clip-path:polygon(34% 0%,66% 0%,100% 100%,0% 100%);animation:spf var(--spd,5s) ease-in-out infinite alternate;}
+@keyframes spf{0%{opacity:.52;transform:translateX(-50%) skewX(0deg);}30%{opacity:.86;transform:translateX(-50%) skewX(.8deg);}60%{opacity:.62;transform:translateX(-50%) skewX(-.5deg);}100%{opacity:.58;transform:translateX(-50%) skewX(.3deg);}}
+.sp-p{position:absolute;bottom:calc(26vh + 2px);transform:translateX(-50%);width:130px;height:22px;background:radial-gradient(ellipse,rgba(255,225,140,.17) 0%,transparent 70%);border-radius:50%;animation:spf var(--spd,5s) ease-in-out infinite alternate;}
+
+canvas.dust{position:fixed;inset:0;z-index:5;pointer-events:none;}
+.vignette{position:fixed;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse 82% 82% at 50% 48%,transparent 35%,rgba(6,3,1,.62) 100%);}
+
+.site-header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:16px 56px;background:linear-gradient(to bottom,rgba(10,5,2,.94) 60%,transparent);}
 .brand{display:flex;align-items:center;gap:12px;}
-.brand-heart{font-size:18px;animation:heartbeat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 7px rgba(200,100,100,.4));}
-@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.18);}28%{transform:scale(1);}42%{transform:scale(1.1);}56%{transform:scale(1);}}
-.brand-name{font-family:'Dancing Script',cursive;font-size:20px;color:var(--blush);opacity:.8;}
-.back-btn{font-size:11px;letter-spacing:.12em;color:var(--muted);background:transparent;border:1px solid rgba(138,106,104,.3);border-radius:2px;padding:7px 16px;cursor:pointer;transition:all .25s;text-transform:uppercase;font-family:'Lato',sans-serif;}
-.back-btn:hover{color:var(--blush);border-color:var(--border);}
+.brand-r{font-size:16px;}
+.brand-n{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:rgba(230,215,190,.82);letter-spacing:.06em;}
+.hbtn{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.2em;color:rgba(220,200,160,.38);background:transparent;border:1px solid rgba(220,200,160,.12);border-radius:1px;padding:7px 14px;cursor:pointer;transition:all .25s;text-transform:uppercase;}
+.hbtn:hover{color:rgba(220,200,160,.75);border-color:rgba(220,200,160,.28);}
 
-/* POSTBOX HERO */
-.pb-hero{padding:48px 52px 28px;animation:fadeUp .8s ease .1s both;}
-.pb-pre{font-family:'Dancing Script',cursive;font-size:17px;color:var(--rose);opacity:.6;margin-bottom:6px;}
-.pb-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;color:var(--cream);margin-bottom:8px;line-height:1.1;}
-.pb-title em{font-style:italic;color:var(--blush);}
-.pb-sub{font-size:13px;font-style:italic;color:var(--muted);letter-spacing:.04em;line-height:1.65;max-width:480px;}
+.scroll-content{position:relative;z-index:15;padding:calc(22vh + 60px) 0 calc(26vh + 60px);min-height:100vh;}
+.content-box{max-width:780px;width:100%;margin:0 auto;padding:40px 56px 0;}
 
-/* FILTER BAR */
-.filter-bar{padding:0 52px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fadeUp .8s ease .18s both;}
-.filter-btn{font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:all .25s;}
-.filter-btn.active,.filter-btn:hover{color:var(--blush);border-color:rgba(201,123,132,.35);background:rgba(201,123,132,.07);}
-.msg-count{margin-left:auto;font-family:'Dancing Script',cursive;font-size:15px;color:var(--muted);}
+.page-pre{font-family:'Dancing Script',cursive;font-size:17px;color:rgba(200,170,110,.52);margin-bottom:6px;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:rgba(230,215,185,.92);margin-bottom:8px;line-height:1.1;text-shadow:0 2px 16px rgba(0,0,0,.35);}
+.page-title em{font-style:italic;color:#d4a84c;}
+.page-sub{font-size:13px;font-style:italic;color:rgba(190,165,120,.5);margin-bottom:28px;line-height:1.65;letter-spacing:.04em;}
 
-/* LETTERS CONTAINER */
-.letters-wrap{flex:1;overflow-y:auto;padding:0 52px 52px;scrollbar-width:thin;scrollbar-color:rgba(201,123,132,.15) transparent;}
-.letters-wrap::-webkit-scrollbar{width:4px;}
-.letters-wrap::-webkit-scrollbar-thumb{background:rgba(201,123,132,.15);border-radius:2px;}
+.toast{position:fixed;bottom:calc(26vh + 20px);left:50%;transform:translateX(-50%) translateY(12px);background:rgba(240,232,215,.97);border:1px solid rgba(120,90,40,.2);border-radius:1px;padding:10px 28px;font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:#3a2810;opacity:0;transition:all .3s;z-index:100;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* Empty */
-.empty{padding:80px 0;text-align:center;}
-.empty-rose{font-size:48px;display:block;margin-bottom:18px;opacity:.3;}
-.empty-text{font-family:'Dancing Script',cursive;font-size:20px;color:var(--muted);line-height:1.7;}
+@keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 
-/* ── PARCHMENT LETTER ── */
-.letter{position:relative;margin-bottom:32px;animation:letterIn .55s ease both;cursor:default;}
-.letter:hover .letter-paper{transform:translateY(-4px) rotate(.25deg);box-shadow:0 12px 40px rgba(0,0,0,.55),0 0 20px rgba(201,123,132,.08);}
+/* Parallax scroll JS helper classes */
 
-.letter-paper{
-  background:linear-gradient(158deg,var(--parch) 0%,var(--parch2) 55%,var(--parch3) 100%);
-  border-radius:1px;padding:32px 36px 28px;position:relative;overflow:hidden;
-  box-shadow:0 6px 28px rgba(0,0,0,.5),2px 2px 0 rgba(160,120,60,.1),inset 0 0 60px rgba(160,120,50,.05);
-  transition:transform .35s,box-shadow .35s;
-}
 
-/* Aged paper lines */
-.letter-paper::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(140,100,40,.055) 29px,rgba(140,100,40,.055) 30px);pointer-events:none;}
-/* Left margin */
-.letter-paper::after{content:'';position:absolute;top:0;bottom:0;left:62px;width:1px;background:rgba(180,120,80,.1);pointer-events:none;}
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap');
+.fbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.fb{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:5px 14px;background:transparent;border:1px solid rgba(160,130,70,.18);border-radius:18px;color:rgba(180,155,110,.45);cursor:pointer;transition:all .25s;}
+.fb.active,.fb:hover{color:rgba(200,165,90,.8);border-color:rgba(180,140,60,.35);background:rgba(180,140,60,.08);}
+.mc{margin-left:auto;font-family:'Dancing Script',cursive;font-size:15px;color:rgba(160,135,95,.4);}
+.letter{position:relative;margin-bottom:28px;animation:fu .55s ease both;cursor:default;}
+.letter:hover .lp{transform:translateY(-4px);box-shadow:0 10px 32px rgba(0,0,0,.18);}
+.lp{background:linear-gradient(158deg,#f0e6c6 0%,#e6d6a4 55%,#d8c688 100%);border-radius:1px;padding:28px 34px 24px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.15),2px 2px 0 rgba(100,75,25,.08);transition:transform .35s ease,box-shadow .35s;}
+.lp::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(100,75,25,.05) 29px,rgba(100,75,25,.05) 30px);pointer-events:none;}
+.lp::after{content:'';position:absolute;top:0;bottom:0;left:58px;width:1px;background:rgba(140,100,50,.08);pointer-events:none;}
+.fold{position:absolute;bottom:0;right:0;width:22px;height:22px;background:linear-gradient(225deg,#d8c688 50%,rgba(0,0,0,.07) 50%);border-top:1px solid rgba(100,75,25,.12);border-left:1px solid rgba(100,75,25,.12);}
+.new-b{position:absolute;top:-9px;right:14px;background:#804040;color:rgba(255,240,215,.95);font-family:'Cinzel',serif;font-size:7px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;border-radius:1px;box-shadow:0 0 10px rgba(128,64,64,.4);}
+.lh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(100,70,25,.14);}
+.lf{font-family:'Dancing Script',cursive;font-size:20px;color:#281808;line-height:1;}
+.lf.mine{color:#202058;}
+.ld{font-size:10px;color:#6a4820;letter-spacing:.05em;font-style:italic;opacity:.7;}
+.lb2{font-family:'IM Fell English',Georgia,serif;font-size:17px;color:#1c1208;line-height:1.95;letter-spacing:.01em;word-break:break-word;}
+.seal{position:absolute;bottom:12px;right:32px;font-size:18px;opacity:.1;transform:rotate(-12deg);}
+.empty{padding:60px 0;text-align:center;}
+.empty-i{font-size:48px;display:block;margin-bottom:18px;opacity:.25;}
+.empty-t{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:rgba(180,155,110,.45);line-height:1.7;}
 
-/* Folded corner */
-.fold{position:absolute;bottom:0;right:0;width:24px;height:24px;background:linear-gradient(225deg,var(--parch3) 50%,rgba(0,0,0,.07) 50%);border-top:1px solid rgba(140,100,40,.14);border-left:1px solid rgba(140,100,40,.14);}
-
-/* Water stain / age spot */
-.age-spot{position:absolute;border-radius:50%;background:rgba(140,100,40,.04);pointer-events:none;}
-
-/* NEW badge */
-.new-badge{position:absolute;top:-9px;right:16px;background:#b04040;color:white;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;border-radius:1px;box-shadow:0 0 12px rgba(176,64,64,.5);animation:badgePop .4s cubic-bezier(.34,1.56,.64,1) both;}
-@keyframes badgePop{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
-@keyframes letterIn{from{opacity:0;transform:translateY(18px) rotate(-.4deg);}to{opacity:1;transform:none;}}
-
-.letter-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(120,90,40,.16);}
-.letter-from{font-family:'Dancing Script',cursive;font-size:20px;color:var(--ink2);line-height:1;}
-.letter-from.mine{color:#3a2860;}
-.letter-date{font-size:10px;color:var(--ink-fade);letter-spacing:.06em;font-style:italic;opacity:.7;}
-
-.letter-body{font-family:'IM Fell English',serif;font-size:17px;color:var(--ink);line-height:1.95;letter-spacing:.01em;word-break:break-word;}
-
-/* Heart seal */
-.letter-seal{position:absolute;bottom:16px;right:36px;font-size:20px;opacity:.14;transform:rotate(-12deg);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div class="bg-warm"></div>
-<div class="page">
-<header class="header">
-  <div class="brand"><span class="brand-heart">🌹</span><span class="brand-name">PostBox</span></div>
-  <button class="back-btn" onclick="window.location.href='home.html'">← Home</button>
+
+<div class="room-wall" id="rwall"></div>
+<div class="room-ceiling" id="rceil"></div>
+<div class="track-rail"></div>
+<div class="baseboard"></div>
+<div class="room-floor" id="rfloor">
+  <div class="fp"></div><div class="fs2"></div><div class="fao"></div>
+</div>
+<div class="spots-fixed">
+  <div class="sp-h" style="left:18%"></div><div class="sp-h" style="left:50%"></div><div class="sp-h" style="left:82%"></div>
+  <div class="sp-c" style="left:18%;--spd:4.8s"></div><div class="sp-c" style="left:50%;--spd:6.4s"></div><div class="sp-c" style="left:82%;--spd:5.2s"></div>
+  <div class="sp-p" style="left:18%;--spd:4.8s"></div><div class="sp-p" style="left:50%;--spd:6.4s"></div><div class="sp-p" style="left:82%;--spd:5.2s"></div>
+</div>
+<canvas class="dust" id="dust"></canvas>
+<div class="vignette"></div>
+
+<header class="site-header">
+  <div class="brand"><span class="brand-r">🌹</span><span class="brand-n">PostBox</span></div>
+  <button class="hbtn" onclick="window.location.href='home.html'">← Home</button>
 </header>
+<div class="scroll-content">
+  <div class="content-box">
 
-<div class="pb-hero">
-  <div class="pb-pre">every word, kept forever</div>
-  <div class="pb-title">Our <em>PostBox</em></div>
-  <p class="pb-sub">Every letter from the very beginning — sealed in time, always readable, never forgotten.</p>
+<div style="animation:fu .8s ease .1s both">
+<div class="page-pre">every word, kept forever</div>
+<div class="page-title">Our <em>PostBox</em></div>
+<p class="page-sub">Every letter from the very beginning — sealed in time, always readable, never forgotten.</p>
+<div class="fbar">
+  <button class="fb active" onclick="setF('all',this)">All Letters</button>
+  <button class="fb" id="fbme" onclick="setF('me',this)">From Me</button>
+  <button class="fb" id="fbthem" onclick="setF('them',this)">From Them</button>
+  <span class="mc" id="mc">0 letters</span>
+</div>
+<div id="letters"></div>
 </div>
 
-<div class="filter-bar">
-  <button class="filter-btn active" onclick="filter('all',this)">All Letters</button>
-  <button class="filter-btn" id="btn-me" onclick="filter('me',this)">From Me</button>
-  <button class="filter-btn" id="btn-them" onclick="filter('them',this)">From Them</button>
-  <span class="msg-count" id="msg-count">0 letters</span>
+  </div>
 </div>
-
-<div class="letters-wrap" id="letters">
-  <div class="empty"><span class="empty-rose">💌</span><div class="empty-text">The PostBox is empty.<br>Write the first letter.</div></div>
-</div>
-</div>
+<div class="toast" id="toast"></div>
 <script>
-(function(){const c=document.getElementById('c'),ctx=c.getContext('2d');let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}resize();window.addEventListener('resize',resize);const S=['❤','♥','·','·','✿','·'],ps=[];for(let i=0;i<40;i++)ps.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight+window.innerHeight,sym:S[Math.floor(Math.random()*S.length)],size:Math.random()*8+4,speed:Math.random()*.4+.15,drift:(Math.random()-.5)*.3,alpha:Math.random()*.16+.04,rot:Math.random()*Math.PI*2,rotSpeed:(Math.random()-.5)*.01,phase:Math.random()*Math.PI*2,sway:Math.random()*.5+.2});let t=0;function draw(){ctx.clearRect(0,0,W,H);t+=.01;for(const p of ps){p.y-=p.speed;p.x+=Math.sin(t*p.sway+p.phase)*p.drift;p.rot+=p.rotSpeed;if(p.y<-30){p.y=H+20;p.x=Math.random()*W;}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.font=p.size+'px serif';ctx.fillStyle=(p.sym==='·'||p.sym==='✿')?'rgba(240,215,205,1)':'rgba(210,120,130,1)';ctx.textAlign='center';ctx.fillText(p.sym,0,0);ctx.restore();}requestAnimationFrame(draw);}draw();})();
+const user=localStorage.getItem('user');if(!user)window.location.href='index.html';
 
-const user=localStorage.getItem('user');
-if(!user)window.location.href='index.html';
+(function(){
+  const c=document.getElementById('dust'),ctx=c.getContext('2d');
+  let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const spotXs=[.18,.50,.82];const motes=[];
+  for(let i=0;i<80;i++)motes.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.6+.25,vx:(Math.random()-.5)*.22,vy:-(Math.random()*.24+.04),a:Math.random()*.14+.022,phase:Math.random()*Math.PI*2,freq:Math.random()*.006+.002});
+  let t=0;
+  function draw(){ctx.clearRect(0,0,W,H);t+=.009;
+    for(const m of motes){
+      m.x+=m.vx+Math.sin(t*m.freq+m.phase)*.32;m.y+=m.vy;
+      if(m.y<-5){m.y=H+5;m.x=Math.random()*W;}if(m.x<0)m.x=W;if(m.x>W)m.x=0;
+      let alpha=m.a;
+      if(m.y>H*.22&&m.y<H*.74){for(const sx of spotXs){const cx=sx*W,coneW=95,dx=Math.abs(m.x-cx);if(dx<coneW){const frac=1-dx/coneW,yfrac=Math.max(0,1-(m.y-H*.22)/(H*.52)*.7);alpha=Math.min(.78,alpha+frac*yfrac*.38);}}}
+      ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);ctx.fillStyle='rgba(240,220,155,'+alpha+')';ctx.fill();
+    }requestAnimationFrame(draw);}draw();
+})();
+const rceil=document.getElementById('rceil'),rfloor=document.getElementById('rfloor'),rwall=document.getElementById('rwall');
+let tk=false;window.addEventListener('scroll',()=>{if(!tk){requestAnimationFrame(()=>{const sy=window.scrollY;if(rceil)rceil.style.transform='translateY('+(sy*.05)+'px)';if(rfloor)rfloor.style.transform='translateY('+(-sy*.12)+'px)';if(rwall)rwall.style.transform='translateY('+(sy*.02)+'px)';tk=false;});tk=true;}},{passive:true});
 
-// Update btn labels with other user's name
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+
 const other=user==='person1'?'person2':'person1';
-document.getElementById('btn-them').textContent='From '+other;
-document.getElementById('btn-me').textContent='From Me ('+user+')';
-
-let currentFilter='all';
-
-function filter(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
+document.getElementById('fbthem').textContent='From '+other;
+document.getElementById('fbme').textContent='From Me';
+let cf='all';
+function setF(f,btn){cf=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
 function render(){
   const msgs=JSON.parse(localStorage.getItem('msgs'))||[];
-  const lastRead=parseInt(localStorage.getItem('lastRead_'+user)||'0');
+  const lr=parseInt(localStorage.getItem('lastRead_'+user)||'0');
+  let fil=msgs;if(cf==='me')fil=msgs.filter(m=>m.sender===user);if(cf==='them')fil=msgs.filter(m=>m.sender!==user);
+  document.getElementById('mc').textContent=fil.length+' letter'+(fil.length===1?'':'s');
   const el=document.getElementById('letters');
-
-  let filtered=msgs;
-  if(currentFilter==='me')filtered=msgs.filter(m=>m.sender===user);
-  if(currentFilter==='them')filtered=msgs.filter(m=>m.sender!==user);
-
-  document.getElementById('msg-count').textContent=filtered.length+' letter'+(filtered.length===1?'':'s');
-
-  if(filtered.length===0){
-    el.innerHTML='<div class="empty"><span class="empty-rose">💌</span><div class="empty-text">No letters here yet.</div></div>';
-    return;
-  }
-
-  // newest first
-  const sorted=[...filtered].reverse();
+  if(!fil.length){el.innerHTML='<div class="empty"><span class="empty-i">📭</span><div class="empty-t">No letters here yet.</div></div>';return;}
+  const sorted=[...fil].reverse();
   el.innerHTML=sorted.map((m,i)=>{
-    const isNew=m.sender!==user&&m.ts>lastRead;
-    const isMine=m.sender===user;
-    const delay=Math.min(i*.06,.5);
-    // age spots
-    const spots=Array.from({length:3},()=>`<div class="age-spot" style="width:${20+Math.random()*40}px;height:${15+Math.random()*30}px;top:${Math.random()*80}%;left:${Math.random()*80}%;transform:rotate(${Math.random()*360}deg)"></div>`).join('');
+    const isNew=m.sender!==user&&m.ts>lr,isMine=m.sender===user,delay=Math.min(i*.06,.5);
+    const spots=Array.from({length:3},()=>`<div style="position:absolute;width:${18+Math.random()*34}px;height:${12+Math.random()*26}px;top:${Math.random()*80}%;left:${Math.random()*80}%;transform:rotate(${Math.random()*360}deg);border-radius:50%;background:rgba(100,75,25,.03);pointer-events:none"></div>`).join('');
     return `<div class="letter" style="animation-delay:${delay}s">
-      ${isNew?'<div class="new-badge">New ♥</div>':''}
-      <div class="letter-paper">
-        ${spots}
-        <div class="fold"></div>
-        <div class="letter-header">
-          <span class="letter-from ${isMine?'mine':''}">${esc(m.sender)}</span>
-          <span class="letter-date">${m.time}</span>
-        </div>
-        <div class="letter-body">${esc(m.text)}</div>
-        <div class="letter-seal">♥</div>
-      </div>
-    </div>`;
+      ${isNew?'<div class="new-b">New ♥</div>':''}
+      <div class="lp">${spots}<div class="fold"></div>
+        <div class="lh"><span class="lf ${isMine?'mine':''}">${esc(m.sender)}</span><span class="ld">${m.time}</span></div>
+        <div class="lb2">${esc(m.text)}</div><div class="seal">♥</div>
+      </div></div>`;
   }).join('');
-
-  // Mark all as read once opened
-  if(msgs.length>0){
-    const latest=Math.max(...msgs.map(m=>m.ts));
-    localStorage.setItem('lastRead_'+user,String(latest));
-  }
+  if(msgs.length>0){const latest=Math.max(...msgs.map(m=>m.ts));localStorage.setItem('lastRead_'+user,String(latest));}
 }
+render();setInterval(render,5000);
 
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
-render();
-setInterval(render,5000);
 </script>
 </body>
 </html>
