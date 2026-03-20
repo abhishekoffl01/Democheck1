@@ -4,606 +4,481 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our World</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 <style>
+:root{
+  --wall:       #f2ede6;
+  --wall2:      #ede7de;
+  --ceiling:    #e8e0d5;
+  --floor:      #c8b898;
+  --floor2:     #a89070;
+  --baseboard:  #d4cabb;
+  --navy:       #1e2d4a;
+  --navy2:      #2d3f5e;
+  --navy-light: #4a6080;
+  --slate:      #6a7d94;
+  --cream:      #f8f4ee;
+  --text:       #1e2d4a;
+  --text-mid:   #3a4e68;
+  --text-soft:  #6a7d94;
+  --border:     rgba(30,45,74,0.1);
+  --shadow:     rgba(30,20,10,0.12);
+  --accent:     #1e2d4a;
+  --spot-warm:  rgba(255,240,200,0.18);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
-body{font-family:'Cormorant Garamond',serif;background:#0a0502;}
+body{font-family:'Jost',sans-serif;background:var(--wall);}
 
-/* ═══════════════════════════════
-   SCENE — 3D perspective room
-═══════════════════════════════ */
-.scene{
-  position:fixed;inset:0;
-  perspective:900px;
-  perspective-origin:50% 42%;
-  overflow:hidden;
-}
-
-/* Room box - the actual 3D container */
+/* ── ROOM ── */
 .room{
-  position:absolute;inset:0;
-  transform-style:preserve-3d;
-  animation:roomEnter 2.8s cubic-bezier(.16,1,.3,1) 0.6s both;
+  position:fixed;inset:0;
+  overflow:hidden;
+  animation:roomReveal 1.4s ease both;
 }
-@keyframes roomEnter{
-  0%  {transform:translateZ(-320px) scale(.7);filter:brightness(.2) blur(12px);}
-  60% {filter:brightness(.75) blur(2px);}
-  100%{transform:translateZ(0px) scale(1);filter:brightness(1) blur(0);}
+@keyframes roomReveal{
+  from{opacity:0;filter:blur(6px);}
+  to{opacity:1;filter:blur(0);}
 }
 
-/* ── BACK WALL ── */
+/* BACK WALL */
 .wall-back{
   position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 90% 70% at 50% 30%, #c8b898 0%, #b8a880 30%, #9a8c6a 70%, #7a6e50 100%);
-  /* Wall texture via SVG filter */
-  filter:url(#wallgrain);
-}
-.wall-back::before{
-  /* Wainscoting panel - lower third */
-  content:'';position:absolute;left:0;right:0;bottom:0;
-  height:32%;
-  background:
-    linear-gradient(to top,
-      #5a4020 0px,#6a5030 8px,#7a5e38 18px,
-      #8a6e48 30px,#9a7e58 50%,
-      rgba(120,100,70,.3) 100%
+    radial-gradient(ellipse 110% 70% at 50% 35%,
+      #f8f4ee 0%,#f2ede6 25%,#ece5db 55%,#e2d8cc 80%,#d8cec0 100%
     );
-  border-top:3px solid #a08050;
 }
-.wall-back::after{
-  /* Ambient occlusion corners */
-  content:'';position:absolute;inset:0;
+/* Corner shadow — ambient occlusion */
+.wall-back::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 40% 100% at 0% 50%, rgba(30,15,5,.55) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 100% at 100% 50%, rgba(30,15,5,.55) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(20,10,3,.7) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 20% at 50% 100%, rgba(10,5,2,.8) 0%, transparent 70%);
-  pointer-events:none;
+    radial-gradient(ellipse 30% 100% at 0% 50%,rgba(20,15,10,.12) 0%,transparent 65%),
+    radial-gradient(ellipse 30% 100% at 100% 50%,rgba(20,15,10,.12) 0%,transparent 65%),
+    radial-gradient(ellipse 100% 20% at 50% 0%,rgba(20,15,10,.1) 0%,transparent 55%),
+    radial-gradient(ellipse 100% 15% at 50% 100%,rgba(20,15,10,.08) 0%,transparent 50%);
+}
+/* Wainscoting */
+.wall-back::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:30%;
+  background:linear-gradient(to top,
+    #cfc5b5 0%,#d8cfc0 12%,#e0d8ca 28%,
+    rgba(224,216,202,.4) 65%,transparent 100%
+  );
+  border-top:1px solid rgba(180,165,145,.35);
 }
 
-/* ── CEILING ── */
+/* CEILING */
 .ceiling{
-  position:absolute;top:0;left:0;right:0;
-  height:28%;
-  background:
-    linear-gradient(to bottom,
-      #1a0c04 0%,
-      #2a1608 18%,
-      #3a2010 32%,
-      #4a2c14 45%,
-      rgba(80,45,15,.6) 70%,
-      transparent 100%
-    );
-  transform-origin:top center;
-  transform:rotateX(0deg);
+  position:absolute;top:0;left:0;right:0;height:22%;
+  background:linear-gradient(to bottom,
+    #e0d8ce 0%,#e8e0d6 30%,#ede7de 60%,
+    rgba(237,231,222,.5) 80%,transparent 100%
+  );
 }
-/* Wood grain beams */
+/* Crown moulding */
 .ceiling::before{
-  content:'';position:absolute;inset:0;
-  background:
-    repeating-linear-gradient(90deg,
-      rgba(0,0,0,.25) 0px, rgba(0,0,0,.25) 2px,
-      transparent 2px, transparent calc(100%/7 - 2px),
-      rgba(255,200,100,.04) calc(100%/7 - 2px), rgba(255,200,100,.04) calc(100%/7)
-    ),
-    repeating-linear-gradient(0deg,
-      rgba(0,0,0,.1) 0px, rgba(0,0,0,.1) 1px,
-      transparent 1px, transparent 18px
-    );
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,rgba(180,165,145,.5),transparent);
 }
-/* Ceiling warm glow bounce */
+/* Subtle ceiling shadow toward wall */
 .ceiling::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:60%;
-  background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(255,180,80,.08) 0%,transparent 70%);
+  background:linear-gradient(to top,rgba(20,15,10,.04),transparent);
 }
 
-/* ── FLOOR ── */
+/* FLOOR */
 .floor{
-  position:absolute;bottom:0;left:0;right:0;
-  height:28%;
-  transform-origin:bottom center;
+  position:absolute;bottom:0;left:0;right:0;height:24%;
   overflow:hidden;
 }
 .floor-surface{
   position:absolute;inset:0;
   background:
     repeating-linear-gradient(90deg,
-      #6a4820 0px, #7a5830 58px,
-      #5e3e18 58px, #6a4820 60px,
-      #8a6840 60px, #9a7850 118px,
-      #6a4820 118px, #6a4820 120px
+      #c8b898 0px,#d4c4a4 59px,
+      #b8a888 59px,#c8b898 60px,
+      #ddd0b0 60px,#e8dcc0 119px,
+      #c8b898 119px,#c8b898 120px
     ),
     linear-gradient(to top,
-      #2a1408 0%,#4a2c14 15%,#7a5030 40%,
-      #9a7050 65%,#b09070 85%,#c0a880 100%
+      #a09070 0%,#b4a080 20%,
+      #c8b090 40%,#d8c4a4 65%,
+      #e4d4b8 85%,#eee0ca 100%
     );
   background-blend-mode:multiply;
 }
-/* Floor reflection/sheen */
 .floor-sheen{
   position:absolute;inset:0;
   background:linear-gradient(to top,
-    rgba(255,200,120,.12) 0%,rgba(255,220,160,.05) 30%,transparent 60%
+    rgba(255,250,235,.14) 0%,rgba(255,248,230,.06) 35%,transparent 65%
   );
-  animation:floorSheen 6s ease-in-out infinite alternate;
+  animation:floorSheen 8s ease-in-out infinite alternate;
 }
-@keyframes floorSheen{0%{opacity:.5;}100%{opacity:1;}}
-/* Floor perspective shadow from wall */
-.floor-shadow{
+@keyframes floorSheen{0%{opacity:.4;}100%{opacity:1;}}
+/* Floor shadow from wall */
+.floor-ao{
   position:absolute;top:0;left:0;right:0;height:40%;
-  background:linear-gradient(to bottom,rgba(20,10,4,.4),transparent);
+  background:linear-gradient(to bottom,rgba(20,15,10,.08),transparent);
 }
 
-/* ── LEFT WALL ── */
-.wall-left{
-  position:absolute;top:0;bottom:0;left:0;
-  width:22%;
-  background:linear-gradient(to right,
-    #5a3c18 0%,#7a5428 20%,#9a7048 40%,
-    #b08858 60%,rgba(176,136,88,.6) 80%,transparent 100%
-  );
-  transform-origin:left center;
+/* BASEBOARD */
+.baseboard{
+  position:absolute;bottom:24%;left:0;right:0;height:12px;
+  background:linear-gradient(to top,#c8bead,#d8d0c4,#c8bead);
+  box-shadow:0 -1px 4px rgba(20,15,10,.08),0 2px 6px rgba(20,15,10,.06);
 }
-.wall-left::before{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,
-    rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,
-    transparent 1px,transparent 22px
-  );
+.baseboard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,165,150,.6),transparent);
 }
 
-/* ── RIGHT WALL ── */
-.wall-right{
-  position:absolute;top:0;bottom:0;right:0;
-  width:22%;
-  background:linear-gradient(to left,
-    #5a3c18 0%,#7a5428 20%,#9a7048 40%,
-    #b08858 60%,rgba(176,136,88,.6) 80%,transparent 100%
-  );
-}
-.wall-right::before{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,
-    rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,
-    transparent 1px,transparent 22px
-  );
-}
-
-/* ── TRACK LIGHTING RAIL ── */
+/* TRACK RAIL */
 .track-rail{
-  position:absolute;top:28%;left:5%;right:5%;
+  position:absolute;top:22%;left:5%;right:5%;
   height:8px;
-  background:linear-gradient(to bottom,#1a0e06,#2a1a0a,#1a0e06);
+  background:linear-gradient(to bottom,#a09888,#b8b0a4,#a09888);
   border-radius:4px;
-  box-shadow:0 2px 8px rgba(0,0,0,.6),0 4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.04);
+  box-shadow:0 2px 6px rgba(20,15,10,.12),inset 0 1px 0 rgba(255,255,255,.4);
 }
 
-/* ── SPOT LIGHTS ── */
-.spot{
-  position:absolute;
-  top:calc(28% + 8px);
-  transform:translateX(-50%);
-}
-.spot-head{
+/* SPOT LIGHTS */
+.spot-wrap{position:absolute;inset:0;pointer-events:none;}
+.sp-head{
+  position:absolute;top:calc(22% + 8px);
   width:14px;height:14px;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,#f0e8c0,#c0a060 50%,#604020);
-  box-shadow:0 0 4px rgba(240,220,160,.3),0 2px 4px rgba(0,0,0,.7);
-  margin:0 auto;
+  background:radial-gradient(circle at 38% 32%,#ffffff,#d8d0c4 55%,#a09888);
+  transform:translateX(-50%);
+  box-shadow:0 0 4px rgba(255,255,255,.6),0 2px 4px rgba(20,15,10,.2);
 }
-.spot-cone{
-  width:var(--sw,180px);
-  height:var(--sh,48vh);
-  margin-left:calc(var(--sw,180px) / -2 + 7px);
+.sp-cone{
+  position:absolute;top:calc(22% + 16px);
+  transform:translateX(-50%);
+  width:var(--cw,200px);height:60vh;
   background:linear-gradient(to bottom,
-    rgba(255,230,140,.13) 0%,
-    rgba(255,210,100,.07) 20%,
-    rgba(255,190,80,.03) 45%,
+    var(--spot-warm) 0%,
+    rgba(255,242,210,.08) 25%,
+    rgba(255,238,200,.03) 50%,
     transparent 80%
   );
-  clip-path:polygon(35% 0%,65% 0%,100% 100%,0% 100%);
-  animation:spotFlicker var(--sd,4s) ease-in-out infinite alternate;
-  transform-origin:top center;
+  clip-path:polygon(34% 0%,66% 0%,100% 100%,0% 100%);
+  animation:spBreath var(--spd,5s) ease-in-out infinite alternate;
 }
-@keyframes spotFlicker{
-  0%  {opacity:.6;transform:scaleX(1);}
-  25% {opacity:.9;transform:scaleX(1.03);}
-  50% {opacity:.7;transform:scaleX(.98);}
-  75% {opacity:.95;transform:scaleX(1.02);}
-  100%{opacity:.65;transform:scaleX(1);}
+@keyframes spBreath{
+  0%{opacity:.55;transform:translateX(-50%) skewX(0deg);}
+  40%{opacity:.9;transform:translateX(-50%) skewX(.6deg);}
+  70%{opacity:.65;transform:translateX(-50%) skewX(-.4deg);}
+  100%{opacity:.6;transform:translateX(-50%) skewX(.2deg);}
 }
-/* Pool of light on floor */
-.spot-pool{
-  position:absolute;
-  bottom:28%;
+.sp-pool{
+  position:absolute;bottom:calc(24% + 2px);
   transform:translateX(-50%);
-  width:var(--pw,120px);height:30px;
-  background:radial-gradient(ellipse,rgba(255,220,140,.15) 0%,transparent 70%);
+  width:var(--pw,140px);height:18px;
+  background:radial-gradient(ellipse,rgba(255,245,215,.2) 0%,transparent 70%);
   border-radius:50%;
-  animation:poolFlicker var(--sd,4s) ease-in-out infinite alternate;
+  animation:spBreath var(--spd,5s) ease-in-out infinite alternate;
 }
-@keyframes poolFlicker{0%{opacity:.5;}50%{opacity:.9;}100%{opacity:.6;}}
 
-/* ── WALL SCONCES (candles) ── */
-.sconce{
-  position:absolute;
-  width:24px;
+/* WALL SCONCES */
+.sconce{position:absolute;pointer-events:none;}
+.sc-arm{
+  width:18px;height:3px;
+  background:linear-gradient(to right,var(--baseboard),#a09888);
+  border-radius:2px;margin:0 auto;
+  box-shadow:0 1px 3px rgba(20,15,10,.15);
 }
-.sconce-body{
-  width:12px;height:28px;margin:0 auto;
-  background:linear-gradient(to bottom,#8a6030,#6a4020);
-  border-radius:2px 2px 0 0;
-  box-shadow:2px 0 6px rgba(0,0,0,.5);
-  position:relative;
+.sc-body{
+  width:10px;height:20px;
+  background:linear-gradient(to bottom,#d0c8bc,#b8b0a4);
+  border-radius:2px 2px 0 0;margin:0 auto;
 }
-.sconce-body::before{
-  content:'';position:absolute;bottom:0;left:-4px;right:-4px;height:5px;
-  background:#4a2810;border-radius:0 0 4px 4px;
-}
-.candle-flame{
-  width:8px;height:14px;margin:0 auto -2px;
-  background:radial-gradient(ellipse 60% 100% at 50% 80%,
-    #fff8e0 0%,#ffcc40 30%,#ff8800 60%,rgba(255,60,0,.4) 80%,transparent 100%
+.sc-flame{
+  width:8px;height:13px;margin:0 auto -1px;
+  background:radial-gradient(ellipse 55% 100% at 50% 80%,
+    #fffbe8 0%,#ffd060 30%,#ffa030 60%,rgba(255,80,0,.25) 80%,transparent
   );
   border-radius:50% 50% 30% 30%;
-  animation:candleFlicker 1.8s ease-in-out infinite alternate;
-  transform-origin:bottom center;
-  position:relative;z-index:2;
+  animation:scFlicker var(--fd,2s) ease-in-out infinite alternate;
+  transform-origin:bottom;
 }
-@keyframes candleFlicker{
-  0%  {transform:scaleX(1) scaleY(1) rotate(-1deg);filter:brightness(1);}
-  20% {transform:scaleX(.9) scaleY(1.1) rotate(1.5deg);filter:brightness(1.2);}
-  50% {transform:scaleX(1.1) scaleY(.9) rotate(-2deg);filter:brightness(.85);}
-  80% {transform:scaleX(.85) scaleY(1.15) rotate(2deg);filter:brightness(1.1);}
-  100%{transform:scaleX(1) scaleY(1) rotate(0deg);filter:brightness(.95);}
+@keyframes scFlicker{
+  0%{transform:scaleX(1) scaleY(1) rotate(-.5deg);filter:brightness(1);}
+  30%{transform:scaleX(.88) scaleY(1.1) rotate(1.5deg);filter:brightness(1.15);}
+  60%{transform:scaleX(1.08) scaleY(.92) rotate(-1.5deg);filter:brightness(.9);}
+  100%{transform:scaleX(.95) scaleY(1.05) rotate(.5deg);filter:brightness(1.05);}
 }
-.candle-glow{
-  position:absolute;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  animation:candleGlow 1.8s ease-in-out infinite alternate;
+.sc-halo{
+  position:absolute;border-radius:50%;
+  transform:translate(-50%,-55%);
+  animation:haloGlow var(--fd,2s) ease-in-out infinite alternate;
   pointer-events:none;
 }
-@keyframes candleGlow{
-  0%  {opacity:.6;transform:translate(-50%,-50%) scale(1);}
-  50% {opacity:.9;transform:translate(-50%,-50%) scale(1.15);}
-  100%{opacity:.65;transform:translate(-50%,-50%) scale(.95);}
+@keyframes haloGlow{
+  0%{opacity:.35;transform:translate(-50%,-55%) scale(1);}
+  50%{opacity:.7;transform:translate(-50%,-55%) scale(1.15);}
+  100%{opacity:.4;transform:translate(-50%,-55%) scale(.95);}
 }
 
-/* ── SVG FILTER for wall grain ── */
+/* DUST CANVAS */
+canvas.dust{position:absolute;inset:0;z-index:4;pointer-events:none;}
 
-/* ── ENTRANCE DOOR ── */
-.door-wrap{
-  position:absolute;
-  left:50%;top:28%;
-  transform:translate(-50%,0);
-  width:180px;
-  height:72%;
-  z-index:10;
-  animation:doorPullback 1.4s cubic-bezier(.4,0,.2,1) 1.2s forwards;
-}
-@keyframes doorPullback{
-  0%  {transform:translate(-50%,0) scale(1) translateZ(0);}
-  100%{transform:translate(-50%,0) scale(0) translateZ(-200px);opacity:0;pointer-events:none;}
-}
-.door-arch-frame{
-  position:absolute;inset:-8px -12px;
-  background:linear-gradient(to bottom,#3a2010,#2a1608);
-  border-radius:50% 50% 0 0 / 20% 20% 0 0;
-  box-shadow:inset 0 0 20px rgba(0,0,0,.5),4px 0 12px rgba(0,0,0,.4),-4px 0 12px rgba(0,0,0,.4);
-}
-.door-arch-frame::before{
-  content:'';position:absolute;inset:6px;
-  border:2px solid rgba(160,120,60,.25);
-  border-radius:48% 48% 0 0 / 18% 18% 0 0;
-}
-.door-panel-l,.door-panel-r{
-  position:absolute;top:0;bottom:0;width:50%;
-  overflow:hidden;
-  background:linear-gradient(160deg,#3a2010,#2a1608,#321a0c);
-}
-.door-panel-l{
-  left:0;border-right:1px solid rgba(0,0,0,.5);
-  transform-origin:left center;
-  animation:openDoorL 1.2s cubic-bezier(.4,0,.2,1) 0.6s both;
-}
-.door-panel-r{
-  right:0;border-left:1px solid rgba(0,0,0,.5);
-  transform-origin:right center;
-  animation:openDoorR 1.2s cubic-bezier(.4,0,.2,1) 0.6s both;
-}
-@keyframes openDoorL{
-  0%  {transform:perspective(500px) rotateY(0deg);}
-  100%{transform:perspective(500px) rotateY(-88deg);}
-}
-@keyframes openDoorR{
-  0%  {transform:perspective(500px) rotateY(0deg);}
-  100%{transform:perspective(500px) rotateY(88deg);}
-}
-/* Door wood grain */
-.door-panel-l::before,.door-panel-r::before{
-  content:'';position:absolute;inset:0;
-  background:
-    repeating-linear-gradient(180deg,
-      transparent 0px,transparent 20px,
-      rgba(0,0,0,.1) 20px,rgba(0,0,0,.1) 21px
-    ),
-    repeating-linear-gradient(0deg,
-      rgba(255,200,100,.02) 0px,rgba(255,200,100,.02) 1px,
-      transparent 1px,transparent 6px
-    );
-}
-.door-panel-l::after{
-  content:'';position:absolute;inset:16px 12px;border:1px solid rgba(160,120,60,.12);border-radius:1px;
-}
-.door-panel-r::after{
-  content:'';position:absolute;inset:16px 12px;border:1px solid rgba(160,120,60,.12);border-radius:1px;
-}
-.door-knob-l{
-  position:absolute;top:45%;right:8px;
-  width:10px;height:10px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#f0d880,#c0a040 50%,#806020);
-  box-shadow:0 0 4px rgba(200,160,60,.4),0 1px 3px rgba(0,0,0,.6);
-}
-.door-knob-r{
-  position:absolute;top:45%;left:8px;
-  width:10px;height:10px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#f0d880,#c0a040 50%,#806020);
-  box-shadow:0 0 4px rgba(200,160,60,.4),0 1px 3px rgba(0,0,0,.6);
-}
-/* Warm light from inside room as door opens */
-.door-light{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 100% at 50% 60%,rgba(255,180,80,.15),transparent 70%);
-  opacity:0;animation:doorLightIn .8s ease 1s forwards;
-}
-@keyframes doorLightIn{to{opacity:1;}}
-
-/* ── CANVAS for dust motes ── */
-canvas.dust{
+/* VIGNETTE */
+.vignette{
   position:absolute;inset:0;z-index:5;pointer-events:none;
-  opacity:0;animation:dustFadeIn 1.5s ease 2.5s forwards;
+  background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 40%,rgba(20,15,10,.1) 100%);
 }
-@keyframes dustFadeIn{to{opacity:1;}}
 
 /* ── LOGIN CARD ── */
-.login-wrap{
-  position:absolute;inset:0;z-index:20;
+.login-scene{
+  position:absolute;inset:0;z-index:10;
   display:flex;align-items:center;justify-content:center;
-  opacity:0;animation:loginIn 1s ease 3s forwards;
+  animation:cardReveal 1s ease .4s both;
 }
-@keyframes loginIn{to{opacity:1;}}
+@keyframes cardReveal{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
 
 .card{
-  background:rgba(245,238,225,.96);
-  border:1px solid rgba(120,90,40,.2);
-  border-radius:2px;
-  padding:48px 44px 40px;
-  width:min(400px,88vw);
+  background:rgba(252,249,244,.97);
+  border:1px solid rgba(30,45,74,.1);
+  border-radius:3px;
+  padding:52px 48px 44px;
+  width:min(420px,90vw);
   text-align:center;
   box-shadow:
-    0 2px 4px rgba(0,0,0,.06),
-    0 8px 24px rgba(0,0,0,.14),
-    0 24px 60px rgba(0,0,0,.22),
-    0 0 80px rgba(200,160,80,.06),
+    0 1px 3px rgba(20,15,10,.06),
+    0 4px 16px rgba(20,15,10,.08),
+    0 16px 48px rgba(20,15,10,.1),
+    0 32px 80px rgba(20,15,10,.06),
     inset 0 1px 0 rgba(255,255,255,.9);
   position:relative;
 }
+/* Top accent line */
 .card::before{
-  content:'';position:absolute;top:0;left:15%;right:15%;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(160,120,50,.5),transparent);
+  content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--navy),transparent);
+  opacity:.25;
 }
+/* Subtle inner border */
 .card::after{
-  content:'';position:absolute;inset:12px;
-  border:1px solid rgba(120,90,40,.06);border-radius:1px;pointer-events:none;
+  content:'';position:absolute;inset:14px;
+  border:1px solid rgba(30,45,74,.05);
+  border-radius:2px;pointer-events:none;
 }
-.c-rose{font-size:30px;margin:0 auto 18px;display:block;animation:rosePulse 3s ease-in-out infinite;}
-@keyframes rosePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-.c-eyebrow{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:#8a7050;margin-bottom:10px;}
-.c-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;line-height:1.15;color:#2a1e0e;margin-bottom:6px;}
-.c-title em{font-style:italic;color:#9a7030;}
-.c-sub{font-family:'Dancing Script',cursive;font-size:15px;color:#8a7050;margin-bottom:28px;}
-.c-div{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
-.c-div-line{flex:1;height:1px;background:rgba(120,90,40,.15);}
-.c-div-dot{font-size:10px;color:#c97b84;opacity:.6;}
-.field{margin-bottom:16px;text-align:left;}
-.field label{display:block;font-family:'Cinzel',serif;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:#8a7050;margin-bottom:8px;}
-.field input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(120,90,40,.22);padding:10px 3px;font-family:'Cormorant Garamond',serif;font-size:16px;color:#2a1e0e;outline:none;transition:border-color .3s;}
-.field input::placeholder{color:rgba(120,90,40,.4);font-style:italic;}
-.field input:focus{border-bottom-color:rgba(160,120,50,.6);}
-.err{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:#a05050;margin-bottom:12px;min-height:18px;opacity:0;transition:opacity .3s;}
+
+/* Monogram instead of icon */
+.card-monogram{
+  width:52px;height:52px;margin:0 auto 24px;
+  border:1.5px solid rgba(30,45,74,.18);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-style:italic;font-weight:400;
+  color:var(--navy);letter-spacing:.05em;
+  position:relative;
+}
+.card-monogram::before{
+  content:'';position:absolute;inset:-5px;
+  border-radius:50%;border:1px solid rgba(30,45,74,.07);
+}
+
+.card-label{
+  font-family:'Jost',sans-serif;font-size:9px;
+  letter-spacing:.35em;text-transform:uppercase;
+  color:var(--slate);margin-bottom:10px;font-weight:400;
+}
+.card-title{
+  font-family:'Playfair Display',serif;
+  font-size:30px;font-weight:400;line-height:1.2;
+  color:var(--navy);margin-bottom:6px;letter-spacing:-.2px;
+}
+.card-title em{font-style:italic;color:var(--navy-light);}
+.card-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-style:italic;
+  color:var(--slate);margin-bottom:32px;letter-spacing:.04em;
+}
+.divider{display:flex;align-items:center;gap:14px;margin-bottom:28px;}
+.div-line{flex:1;height:1px;background:rgba(30,45,74,.1);}
+.div-mark{font-size:8px;color:var(--slate);opacity:.5;letter-spacing:.1em;}
+
+.field{margin-bottom:18px;text-align:left;}
+.field label{
+  display:block;font-family:'Jost',sans-serif;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--slate);margin-bottom:9px;font-weight:500;
+}
+.field input{
+  width:100%;background:transparent;border:none;
+  border-bottom:1.5px solid rgba(30,45,74,.14);
+  padding:11px 2px;
+  font-family:'Playfair Display',serif;font-size:16px;
+  color:var(--navy);outline:none;
+  transition:border-color .3s;
+}
+.field input::placeholder{color:rgba(106,125,148,.4);font-style:italic;}
+.field input:focus{border-bottom-color:rgba(30,45,74,.4);}
+
+.err{
+  font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;
+  color:#8a4040;margin-bottom:14px;min-height:18px;
+  text-align:center;opacity:0;transition:opacity .3s;letter-spacing:.04em;
+}
 .err.show{opacity:1;animation:shake .4s ease;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
-.enter-btn{width:100%;padding:13px;background:transparent;border:1px solid rgba(140,100,40,.4);border-radius:1px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:#5a3e18;cursor:pointer;position:relative;overflow:hidden;transition:color .4s,box-shadow .4s;}
-.enter-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,140,60,.15),rgba(120,80,20,.1));transform:translateX(-101%);transition:transform .4s cubic-bezier(.22,1,.36,1);}
-.enter-btn:hover{color:#2a1e0e;box-shadow:0 0 20px rgba(180,140,60,.18);}
-.enter-btn:hover::before{transform:translateX(0);}
-.enter-btn span{position:relative;z-index:1;}
-.c-note{margin-top:18px;font-family:'Dancing Script',cursive;font-size:14px;color:#8a7050;}
 
-/* Welcome text above door */
-.welcome-above{
-  position:absolute;
-  top:calc(28% - 70px);
-  left:50%;transform:translateX(-50%);
-  text-align:center;
-  white-space:nowrap;
-  opacity:0;animation:welcomeIn .8s ease .2s forwards;
-  z-index:11;
+.enter-btn{
+  width:100%;padding:14px;
+  background:var(--navy);
+  border:none;border-radius:2px;
+  font-family:'Jost',sans-serif;font-size:11px;
+  letter-spacing:.25em;text-transform:uppercase;font-weight:500;
+  color:#f8f4ee;cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:background .3s,box-shadow .3s,transform .2s;
+  box-shadow:0 4px 16px rgba(30,45,74,.25);
 }
-@keyframes welcomeIn{to{opacity:1;}}
-.w1{display:block;font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.8vw,22px);font-style:italic;font-weight:300;color:rgba(230,215,190,.7);letter-spacing:.08em;}
-.w2{display:block;font-family:'Dancing Script',cursive;font-size:clamp(12px,2vw,16px);color:rgba(200,160,80,.4);letter-spacing:.12em;margin-top:4px;}
+.enter-btn::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,.1);
+  transform:translateX(-101%);
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+}
+.enter-btn:hover{background:var(--navy2);box-shadow:0 6px 24px rgba(30,45,74,.35);transform:translateY(-1px);}
+.enter-btn:hover::before{transform:translateX(0);}
+.enter-btn:active{transform:translateY(0);}
+.enter-btn span{position:relative;z-index:1;}
 
-/* Vignette overlay */
-.vignette{
-  position:absolute;inset:0;z-index:6;pointer-events:none;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 40%,rgba(8,4,2,.6) 100%);
+.card-note{
+  margin-top:18px;font-family:'Cormorant Garamond',serif;
+  font-size:14px;font-style:italic;color:rgba(106,125,148,.55);
+  letter-spacing:.04em;
 }
 </style>
 </head>
 <body>
 
-<svg style="position:absolute;width:0;height:0">
-  <defs>
-    <filter id="wallgrain" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
-      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
-      <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blend"/>
-      <feComponentTransfer in="blend">
-        <feFuncR type="linear" slope="1.02" intercept="0.01"/>
-        <feFuncG type="linear" slope="0.98" intercept="0.01"/>
-        <feFuncB type="linear" slope="0.94" intercept="0"/>
-      </feComponentTransfer>
-    </filter>
-  </defs>
-</svg>
+<div class="room">
+  <!-- WALLS -->
+  <div class="wall-back"></div>
+  <!-- CEILING -->
+  <div class="ceiling"></div>
+  <!-- TRACK RAIL -->
+  <div class="track-rail"></div>
+  <!-- FLOOR -->
+  <div class="floor">
+    <div class="floor-surface"></div>
+    <div class="floor-sheen"></div>
+    <div class="floor-ao"></div>
+  </div>
+  <!-- BASEBOARD -->
+  <div class="baseboard"></div>
 
-<div class="scene">
-  <div class="room">
+  <!-- SPOTS -->
+  <div class="spot-wrap">
+    <div class="sp-head" style="left:22%"></div>
+    <div class="sp-head" style="left:50%"></div>
+    <div class="sp-head" style="left:78%"></div>
+    <div class="sp-cone" style="left:22%;--cw:190px;--spd:5s"></div>
+    <div class="sp-cone" style="left:50%;--cw:210px;--spd:7s"></div>
+    <div class="sp-cone" style="left:78%;--cw:190px;--spd:4.5s"></div>
+    <div class="sp-pool" style="left:22%;--pw:130px;--spd:5s"></div>
+    <div class="sp-pool" style="left:50%;--pw:150px;--spd:7s"></div>
+    <div class="sp-pool" style="left:78%;--pw:130px;--spd:4.5s"></div>
+  </div>
 
-    <!-- Walls -->
-    <div class="wall-back"></div>
-    <div class="wall-left"></div>
-    <div class="wall-right"></div>
+  <!-- SCONCES -->
+  <div class="sconce" style="left:9%;top:42%">
+    <div class="sc-flame" style="--fd:1.8s"></div>
+    <div class="sc-arm"></div>
+    <div class="sc-body"></div>
+    <div class="sc-halo" style="left:calc(9% + 5px);top:42%;width:64px;height:64px;background:radial-gradient(circle,rgba(255,200,100,.12) 0%,transparent 68%);--fd:1.8s;"></div>
+  </div>
+  <div class="sconce" style="right:9%;top:42%">
+    <div class="sc-flame" style="--fd:2.2s"></div>
+    <div class="sc-arm"></div>
+    <div class="sc-body"></div>
+    <div class="sc-halo" style="right:calc(9% + 5px);left:auto;top:42%;width:64px;height:64px;background:radial-gradient(circle,rgba(255,200,100,.12) 0%,transparent 68%);--fd:2.2s;"></div>
+  </div>
 
-    <!-- Ceiling -->
-    <div class="ceiling"></div>
+  <!-- Candle glow halos fixed to wall -->
+  <div style="position:absolute;left:calc(9% - 22px);top:calc(42% - 28px);width:76px;height:76px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,100,.1) 0%,transparent 65%);pointer-events:none;animation:haloGlow 1.8s ease-in-out infinite alternate;z-index:1"></div>
+  <div style="position:absolute;right:calc(9% - 22px);top:calc(42% - 28px);width:76px;height:76px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,100,.1) 0%,transparent 65%);pointer-events:none;animation:haloGlow 2.2s ease-in-out infinite alternate;z-index:1"></div>
 
-    <!-- Floor -->
-    <div class="floor">
-      <div class="floor-surface"></div>
-      <div class="floor-sheen"></div>
-      <div class="floor-shadow"></div>
-    </div>
+  <!-- DUST -->
+  <canvas class="dust" id="dust"></canvas>
 
-    <!-- Track rail -->
-    <div class="track-rail"></div>
+  <!-- VIGNETTE -->
+  <div class="vignette"></div>
 
-    <!-- Spot lights -->
-    <div class="spot" style="left:20%">
-      <div class="spot-head"></div>
-      <div class="spot-cone" style="--sw:160px;--sh:46vh;--sd:4.2s"></div>
-    </div>
-    <div class="spot" style="left:38%">
-      <div class="spot-head"></div>
-      <div class="spot-cone" style="--sw:170px;--sh:50vh;--sd:5.8s"></div>
-    </div>
-    <div class="spot" style="left:62%">
-      <div class="spot-head"></div>
-      <div class="spot-cone" style="--sw:170px;--sh:50vh;--sd:3.9s"></div>
-    </div>
-    <div class="spot" style="left:80%">
-      <div class="spot-head"></div>
-      <div class="spot-cone" style="--sw:160px;--sh:46vh;--sd:6.2s"></div>
-    </div>
-
-    <!-- Light pools on floor -->
-    <div class="spot-pool" style="left:20%;--pw:110px;--sd:4.2s"></div>
-    <div class="spot-pool" style="left:38%;--pw:125px;--sd:5.8s"></div>
-    <div class="spot-pool" style="left:62%;--pw:125px;--sd:3.9s"></div>
-    <div class="spot-pool" style="left:80%;--pw:110px;--sd:6.2s"></div>
-
-    <!-- Wall sconces -->
-    <div class="sconce" style="position:absolute;left:10%;top:45%">
-      <div class="candle-flame"></div>
-      <div class="sconce-body"></div>
-      <div class="candle-glow" style="left:calc(10% + 12px);top:45%;width:60px;height:60px;background:radial-gradient(circle,rgba(255,160,40,.18) 0%,transparent 70%);animation-delay:.3s"></div>
-    </div>
-    <div class="sconce" style="position:absolute;right:10%;top:45%">
-      <div class="candle-flame" style="animation-delay:.7s"></div>
-      <div class="sconce-body"></div>
-      <div class="candle-glow" style="right:calc(10% + 12px);left:auto;top:45%;width:60px;height:60px;background:radial-gradient(circle,rgba(255,160,40,.18) 0%,transparent 70%);animation-delay:.7s"></div>
-    </div>
-
-    <!-- Candle glow halos on wall -->
-    <div style="position:absolute;left:calc(10% - 20px);top:calc(45% - 30px);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,60,.12) 0%,transparent 65%);pointer-events:none;animation:candleGlow 1.8s ease-in-out infinite alternate"></div>
-    <div style="position:absolute;right:calc(10% - 20px);top:calc(45% - 30px);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,180,60,.12) 0%,transparent 65%);pointer-events:none;animation:candleGlow 1.8s ease-in-out infinite alternate;animation-delay:.7s"></div>
-
-    <!-- Welcome text above door -->
-    <div class="welcome-above">
-      <span class="w1">Welcome to our world</span>
-      <span class="w2">a place that belongs to us, forever</span>
-    </div>
-
-    <!-- Door -->
-    <div class="door-wrap">
-      <div class="door-arch-frame"></div>
-      <div class="door-light"></div>
-      <div class="door-panel-l"><div class="door-knob-l"></div></div>
-      <div class="door-panel-r"><div class="door-knob-r"></div></div>
-    </div>
-
-    <!-- Dust motes canvas -->
-    <canvas class="dust" id="dust"></canvas>
-
-    <!-- Vignette -->
-    <div class="vignette"></div>
-
-    <!-- Login -->
-    <div class="login-wrap">
-      <div class="card">
-        <span class="c-rose">🌹</span>
-        <div class="c-eyebrow">Private Gallery</div>
-        <h1 class="c-title">Welcome to<br><em>Our World</em></h1>
-        <p class="c-sub">a place that will always be ours</p>
-        <div class="c-div"><div class="c-div-line"></div><span class="c-div-dot">♥</span><div class="c-div-line"></div></div>
-        <div class="field"><label>Who are you</label><input id="user" type="text" placeholder="person1 or person2" onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()"></div>
-        <div class="field"><label>Our secret</label><input id="pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
-        <div class="err" id="err">That doesn't feel right. Try again.</div>
-        <button class="enter-btn" id="ebtn" onclick="login()"><span>Enter the Gallery</span></button>
-        <p class="c-note">Only us · always</p>
+  <!-- LOGIN -->
+  <div class="login-scene">
+    <div class="card">
+      <div class="card-monogram">ow</div>
+      <div class="card-label">A world of two</div>
+      <h1 class="card-title">Welcome to<br><em>Our World</em></h1>
+      <p class="card-sub">a place that will always be ours</p>
+      <div class="divider"><div class="div-line"></div><span class="div-mark">✦</span><div class="div-line"></div></div>
+      <div class="field">
+        <label>Who are you</label>
+        <input id="user" type="text" placeholder="person1 or person2"
+          onkeydown="if(event.key==='Enter')document.getElementById('pass').focus()">
       </div>
+      <div class="field">
+        <label>Our secret</label>
+        <input id="pass" type="password" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')login()">
+      </div>
+      <div class="err" id="err">That doesn't feel right. Try again.</div>
+      <button class="enter-btn" id="ebtn" onclick="login()"><span>Enter Our World</span></button>
+      <p class="card-note">only us · always</p>
     </div>
-
-  </div><!-- .room -->
-</div><!-- .scene -->
+  </div>
+</div>
 
 <script>
 // Dust motes
 (function(){
-  const c=document.getElementById('dust');
-  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  const c=document.getElementById('dust'),ctx=c.getContext('2d');
+  let W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
   resize();window.addEventListener('resize',resize);
-  const ctx=c.getContext('2d');
+  const spotXs=[.22,.50,.78];
   const motes=[];
-  for(let i=0;i<80;i++){
+  for(let i=0;i<70;i++){
     motes.push({
       x:Math.random()*window.innerWidth,
       y:Math.random()*window.innerHeight,
-      r:Math.random()*1.8+.3,
-      vx:(Math.random()-.5)*.25,
-      vy:-(Math.random()*.3+.05),
-      a:Math.random()*.18+.03,
+      r:Math.random()*1.4+.2,
+      vx:(Math.random()-.5)*.2,
+      vy:-(Math.random()*.22+.04),
+      a:Math.random()*.09+.015,
       phase:Math.random()*Math.PI*2,
-      freq:Math.random()*.008+.003
+      freq:Math.random()*.006+.002
     });
   }
-  // Spotlight x positions for extra dust density
-  const spotXs=[.2,.38,.62,.80];
   let t=0;
   function draw(){
-    ctx.clearRect(0,0,c.width,c.height);
-    t+=.01;
+    ctx.clearRect(0,0,W,H);t+=.008;
     for(const m of motes){
-      m.x+=m.vx+Math.sin(t*m.freq+m.phase)*.4;
+      m.x+=m.vx+Math.sin(t*m.freq+m.phase)*.3;
       m.y+=m.vy;
-      if(m.y<-5){m.y=c.height+5;m.x=Math.random()*c.width;}
-      if(m.x<0)m.x=c.width;if(m.x>c.width)m.x=0;
-      // Brighter in spotlight cones
+      if(m.y<-5){m.y=H+5;m.x=Math.random()*W;}
+      if(m.x<0)m.x=W;if(m.x>W)m.x=0;
       let alpha=m.a;
-      for(const sx of spotXs){
-        const cx=sx*c.width;
-        const coneW=90;
-        if(Math.abs(m.x-cx)<coneW&&m.y>c.height*.28){
-          const frac=1-Math.abs(m.x-cx)/coneW;
-          alpha=Math.min(.7,alpha+frac*.35);
+      const wallTop=H*.22,wallBot=H*.76;
+      if(m.y>wallTop&&m.y<wallBot){
+        for(const sx of spotXs){
+          const cx=sx*W,coneW=90,dx=Math.abs(m.x-cx);
+          if(dx<coneW){
+            const frac=1-dx/coneW,yfrac=Math.max(0,1-(m.y-wallTop)/(wallBot-wallTop)*.7);
+            alpha=Math.min(.6,alpha+frac*yfrac*.3);
+          }
         }
       }
-      ctx.beginPath();
-      ctx.arc(m.x,m.y,m.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(240,220,160,${alpha})`;
+      ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,180,130,${alpha})`;
       ctx.fill();
     }
     requestAnimationFrame(draw);
@@ -617,10 +492,10 @@ function login(){
   const err=document.getElementById('err');
   err.classList.remove('show');
   if((u==='person1'||u==='person2')&&p==='1234'){
-    document.getElementById('ebtn').querySelector('span').textContent='Opening the gallery…';
+    document.getElementById('ebtn').querySelector('span').textContent='Stepping inside…';
     localStorage.setItem('user',u);
-    setTimeout(()=>window.location.href='home.html',900);
-  }else{
+    setTimeout(()=>window.location.href='home.html',800);
+  } else {
     document.getElementById('pass').value='';
     void err.offsetWidth;err.classList.add('show');
   }
