@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Gallery · Our World</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPA_URL="https://rxsypivleyjdnpqitzhf.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4c3lwaXZsZXlqZG5wcWl0emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODQ2NTQsImV4cCI6MjA4OTY2MDY1NH0.uIwKE9BJYtQUvuEqo5pDm7OBIRRUv3MVkdRo_w7rJ-w";
-const db=supabase.createClient(SUPA_URL,SUPA_KEY);
+const SUPA_URL = "https://rxsypivleyjdnpqitzhf.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4c3lwaXZsZXlqZG5wcWl0emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODQ2NTQsImV4cCI6MjA4OTY2MDY1NH0.uIwKE9BJYtQUvuEqo5pDm7OBIRRUv3MVkdRo_w7rJ-w";
+const db = supabase.createClient(SUPA_URL, SUPA_KEY);
 </script>
 <style>
 :root{--wall:#f2ede6;--navy:#1e2d4a;--navy2:#2d3f5e;--navy-light:#4a6080;--slate:#6a7d94;--cream:#f8f4ee;--text:#1e2d4a;--text-soft:#6a7d94;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html,body{overflow-x:hidden;}
 body{font-family:'Jost',sans-serif;background:var(--wall);color:var(--text);min-height:100vh;}
+/* ROOM */
 .room-wall{position:fixed;inset:0;z-index:0;will-change:transform;background:radial-gradient(ellipse 110% 70% at 50% 32%,#f8f4ee 0%,#f2ede6 20%,#ebe3d8 45%,#e2d8cc 70%,#d8cec0 100%);}
 .room-wall::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 28% 100% at 0% 50%,rgba(20,15,10,.1) 0%,transparent 62%),radial-gradient(ellipse 28% 100% at 100% 50%,rgba(20,15,10,.1) 0%,transparent 62%),radial-gradient(ellipse 100% 18% at 50% 0%,rgba(20,15,10,.09) 0%,transparent 52%);}
 .room-wall::after{content:'';position:absolute;left:0;right:0;bottom:0;height:26%;background:linear-gradient(to top,#cfc5b5 0%,#d8d0c2 14%,#e0d8ca 30%,rgba(224,216,202,.35) 65%,transparent 100%);border-top:1px solid rgba(180,165,145,.3);}
@@ -44,10 +44,15 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .hbtns{display:flex;align-items:center;gap:10px;}
 .hbtn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;color:var(--text-soft);background:transparent;border:1px solid rgba(30,45,74,.14);border-radius:2px;padding:7px 16px;cursor:pointer;transition:all .25s;text-transform:uppercase;font-weight:500;}
 .hbtn:hover{color:var(--navy);border-color:rgba(30,45,74,.3);background:rgba(30,45,74,.04);}
+/* Upload button */
 .upload-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;color:white;background:var(--navy);border:none;border-radius:2px;padding:8px 18px;cursor:pointer;position:relative;overflow:hidden;transition:background .3s;font-weight:500;text-transform:uppercase;}
 .upload-btn:hover{background:var(--navy2);}
 .upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
 .upload-btn span{position:relative;z-index:1;}
+/* Upload progress */
+.upload-progress{position:fixed;top:0;left:0;right:0;z-index:200;height:3px;background:rgba(30,45,74,.1);display:none;}
+.upload-progress-bar{height:100%;background:var(--navy);width:0%;transition:width .3s ease;}
+.upload-progress.show{display:block;}
 /* MUSEUM */
 .museum{position:relative;z-index:15;padding:calc(20vh + 55px) 0 calc(24vh + 55px);min-height:100vh;}
 .placard{text-align:center;padding:28px 60px 56px;animation:fu .9s ease .1s both;}
@@ -62,6 +67,7 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .rl-num{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-soft);padding:3px 12px;border:1px solid rgba(30,45,74,.12);border-radius:1px;white-space:nowrap;font-weight:500;}
 .rl-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(30,45,74,.1),transparent);}
 .fwall{display:flex;align-items:flex-end;justify-content:center;gap:clamp(24px,5vw,60px);flex-wrap:wrap;padding:48px 60px 0;}
+/* FRAMES */
 .pf{position:relative;cursor:pointer;--tilt:0deg;animation:fh .9s cubic-bezier(.22,1,.36,1) var(--fd,.3s) both;transform-origin:top center;}
 @keyframes fh{from{opacity:0;transform:rotate(var(--tilt)) translateY(-16px);}to{opacity:1;transform:rotate(var(--tilt)) translateY(0);}}
 .pf:hover{z-index:30;}
@@ -74,20 +80,25 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .pf-mat{background:#f5f0e8;position:relative;overflow:hidden;}
 .pf-img{display:block;width:100%;height:100%;object-fit:cover;}
 .pf-demo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.pf-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f0e8;font-size:24px;opacity:.4;}
 .pf-glow{position:absolute;top:-65px;left:50%;transform:translateX(-50%);width:250%;height:200px;background:radial-gradient(ellipse,rgba(255,245,210,.12) 0%,transparent 62%);opacity:0;pointer-events:none;z-index:-1;transition:opacity .4s;}
 .pf:hover .pf-glow{opacity:1;}
 .pf-plate{display:table;margin:8px auto 0;background:var(--navy);padding:4px 14px 5px;border-radius:1px;box-shadow:1px 1px 6px rgba(20,15,10,.15);max-width:calc(100% - 16px);}
 .pf-pt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(240,236,228,.9);letter-spacing:.05em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
 .pf-ps{font-size:9px;color:rgba(180,190,210,.5);letter-spacing:.07em;display:block;}
+/* Frame sizes */
 .fsm .pf-mat{width:145px;height:125px;}.fmd .pf-mat{width:195px;height:160px;}.flg .pf-mat{width:252px;height:202px;}.fxl .pf-mat{width:310px;height:246px;}.ftall .pf-mat{width:150px;height:212px;}.fwide .pf-mat{width:280px;height:158px;}
+/* Arch */
 .rarch{display:flex;align-items:center;gap:22px;padding:62px 60px 0;}
 .ra-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(30,45,74,.12),transparent);}
 .ra-orn{font-size:14px;color:var(--slate);opacity:.3;}
 .ra-lbl{font-family:'Jost',sans-serif;font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:rgba(30,45,74,.25);white-space:nowrap;font-weight:500;}
+/* Empty */
 .empty-wall{text-align:center;padding:80px 60px;}
 .ef{width:200px;height:160px;margin:0 auto 24px;border:2px solid rgba(30,45,74,.12);border-radius:2px;background:rgba(30,45,74,.03);display:flex;align-items:center;justify-content:center;font-size:48px;opacity:.2;position:relative;}
 .ef::before{content:'';position:absolute;inset:12px;border:1px solid rgba(30,45,74,.08);border-radius:1px;}
 .e-txt{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:var(--text-soft);line-height:1.75;}
+/* Lightbox */
 .lb{position:fixed;inset:0;z-index:100;background:rgba(242,237,230,.97);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:20px;}
 .lb.open{display:flex;}
 .lb-f{background:linear-gradient(148deg,#c8b878,#906820,#c0b068,#785818,#b8a858);padding:13px;border-radius:2px;box-shadow:0 24px 70px rgba(20,15,10,.25);max-width:90vw;max-height:82vh;animation:lbI .4s cubic-bezier(.22,1,.36,1) both;position:relative;}
@@ -103,10 +114,12 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .lb-close:hover{color:var(--navy);border-color:rgba(30,45,74,.3);}
 .lb-del{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-soft);background:transparent;border:1px solid rgba(30,45,74,.14);border-radius:2px;padding:8px 20px;cursor:pointer;transition:all .25s;font-weight:500;}
 .lb-del:hover{color:#904040;border-color:rgba(144,64,64,.25);}
-.dh{position:fixed;inset:0;z-index:90;background:rgba(242,237,230,.9);border:2px dashed rgba(30,45,74,.2);display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;backdrop-filter:blur(8px);}
+/* Drag hint */
+.dh{position:fixed;inset:0;z-index:90;background:rgba(242,237,230,.92);border:2px dashed rgba(30,45,74,.2);display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;backdrop-filter:blur(8px);}
 .dh.show{display:flex;}
 .dh-i{font-size:52px;opacity:.3;}.dh-t{font-family:'Playfair Display',serif;font-size:24px;font-style:italic;color:var(--navy);}.dh-s{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--text-soft);}
-.toast{position:fixed;bottom:calc(24vh + 16px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--cream);border:1px solid rgba(30,45,74,.12);border-radius:2px;padding:10px 28px;font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--navy);opacity:0;transition:all .3s;z-index:200;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(20,15,10,.1);}
+/* Toast */
+.toast{position:fixed;bottom:calc(24vh + 16px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--cream);border:1px solid rgba(30,45,74,.12);border-radius:2px;padding:10px 28px;font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--navy);opacity:0;transition:all .3s;z-index:300;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(20,15,10,.1);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .loading-wall{text-align:center;padding:60px;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--text-soft);}
 @keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
@@ -114,6 +127,8 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 </style>
 </head>
 <body>
+
+<!-- ROOM -->
 <div class="room-wall" id="rwall"></div>
 <div class="room-ceiling" id="rceil"></div>
 <div class="track-rail" id="rtrack"></div>
@@ -132,168 +147,329 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 <canvas class="dust" id="dust"></canvas>
 <div class="vignette"></div>
 
+<!-- Upload progress bar -->
+<div class="upload-progress" id="uprogress">
+  <div class="upload-progress-bar" id="uprogress-bar"></div>
+</div>
+
+<!-- HEADER -->
 <header class="site-header">
   <div class="brand"><div class="brand-mono">ow</div><span class="brand-name">Our Gallery</span></div>
   <div class="hbtns">
-    <label class="upload-btn"><input type="file" id="fi" multiple accept="image/*,video/*" onchange="handleFiles(this.files)"><span>+ Add Memory</span></label>
+    <label class="upload-btn">
+      <input type="file" id="fi" multiple accept="image/*,video/*" onchange="handleFiles(this.files)">
+      <span>+ Add Memory</span>
+    </label>
     <button class="hbtn" onclick="window.location.href='home.html'">&#8592; Home</button>
   </div>
 </header>
 
+<!-- MUSEUM -->
 <div class="museum" id="museum">
   <div class="placard">
-    <div class="pl-rule"><div class="pl-line"></div><span class="pl-orn">&#10022;</span><div class="pl-line"></div></div>
+    <div class="pl-rule"><div class="pl-line"></div><span class="pl-orn">✦</span><div class="pl-line"></div></div>
     <div class="pl-title">The Gallery of <em>Our Story</em></div>
     <div class="pl-sub">every frame holds a memory that lasts forever</div>
-    <div class="pl-rule" style="margin-top:12px"><div class="pl-line"></div><span class="pl-orn">&#10022;</span><div class="pl-line"></div></div>
+    <div class="pl-rule" style="margin-top:12px"><div class="pl-line"></div><span class="pl-orn">✦</span><div class="pl-line"></div></div>
   </div>
   <div id="groot"><div class="loading-wall">Loading your memories…</div></div>
 </div>
 
-<div class="dh" id="dh"><div class="dh-i">&#128444;&#65039;</div><div class="dh-t">Drop your memory here</div><div class="dh-s">it will be framed with care</div></div>
+<!-- Drag hint -->
+<div class="dh" id="dh">
+  <div class="dh-i">🖼️</div>
+  <div class="dh-t">Drop your memory here</div>
+  <div class="dh-s">it will be framed with care</div>
+</div>
 
+<!-- Lightbox -->
 <div class="lb" id="lb">
-  <button class="lb-close" onclick="closeLB()">&#215;</button>
-  <div class="lb-f"><div class="lb-mat"><img class="lb-img" id="lbi" src="" alt="" style="display:none"><video class="lb-vid" id="lbv" controls src="" style="display:none"></video></div>
-  <div class="lb-plate"><span class="lb-title" id="lbt">—</span><span class="lb-date" id="lbd">—</span></div></div>
+  <button class="lb-close" onclick="closeLB()">×</button>
+  <div class="lb-f">
+    <div class="lb-mat">
+      <img class="lb-img" id="lbi" src="" alt="" style="display:none">
+      <video class="lb-vid" id="lbv" controls src="" style="display:none"></video>
+    </div>
+    <div class="lb-plate">
+      <span class="lb-title" id="lbt">—</span>
+      <span class="lb-date" id="lbd">—</span>
+    </div>
+  </div>
   <button class="lb-del" onclick="delFromLB()">Remove from gallery</button>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const user=localStorage.getItem('user');
-if(!user)window.location.href='index.html';
+const user = localStorage.getItem('user');
+if (!user) window.location.href = 'index.html';
 
-// DEMO SVG PAINTINGS
-const DEMOS=[
-  {id:'d0',name:'Our First Memory',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g0" cx="40%" cy="40%"><stop offset="0%" stop-color="#b8909a"/><stop offset="60%" stop-color="#785868"/><stop offset="100%" stop-color="#302030"/></radialGradient></defs><rect width="300" height="240" fill="url(#g0)"/><ellipse cx="150" cy="120" rx="80" ry="70" fill="rgba(220,190,200,.15)"/><circle cx="105" cy="92" r="34" fill="rgba(240,210,215,.1)"/><circle cx="198" cy="148" r="44" fill="rgba(160,100,120,.18)"/><path d="M60 180 Q120 105 180 140 Q238 178 278 122" stroke="rgba(240,215,220,.22)" stroke-width="2" fill="none"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(240,215,220,.3)">our first memory</text></svg>`},
-  {id:'d1',name:'Golden Days',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#90b8d0"/><stop offset="100%" stop-color="#d0a868"/></linearGradient></defs><rect width="300" height="155" fill="url(#g1)"/><rect y="155" width="300" height="85" fill="#886040"/><ellipse cx="82" cy="78" rx="58" ry="48" fill="rgba(255,255,255,.1)"/><path d="M0 148 Q75 128 150 152 Q225 174 300 142" fill="#7a5818"/><circle cx="238" cy="46" r="21" fill="rgba(255,230,140,.3)"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(255,238,195,.42)">golden days</text></svg>`},
-  {id:'d2',name:'Our Nights',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g2" cx="50%" cy="30%"><stop offset="0%" stop-color="#282858"/><stop offset="100%" stop-color="#080610"/></radialGradient></defs><rect width="300" height="240" fill="url(#g2)"/><circle cx="218" cy="58" r="17" fill="rgba(255,248,218,.65)"/><circle cx="58" cy="38" r="2" fill="rgba(255,255,255,.75)"/><circle cx="98" cy="28" r="1.5" fill="rgba(255,255,255,.65)"/><circle cx="178" cy="18" r="2" fill="rgba(255,255,255,.6)"/><path d="M0 178 Q78 148 150 168 Q218 188 300 162 L300 240 L0 240Z" fill="#180e06"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(195,178,252,.35)">our nights</text></svg>`},
-  {id:'d3',name:'Our Garden',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="300" height="240" fill="#ede4cc"/><rect y="158" width="300" height="82" fill="#688038"/><rect y="148" width="300" height="18" fill="#88a848" opacity=".6"/>${Array.from({length:8},(_,i)=>`<line x1="${27+i*32}" y1="158" x2="${25+i*32}" y2="${87+Math.round(Math.sin(i)*9)}" stroke="#588028" stroke-width="2"/><circle cx="${25+i*32}" cy="${82+Math.round(Math.sin(i)*9)}" r="11" fill="${['#b07888','#e0a870','#d0b850','#8890c8','#b07888'][i%5]}" opacity=".75"/>`).join('')}<text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(80,60,28,.35)">our garden</text></svg>`},
-  {id:'d4',name:'Still Waters',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5888a8"/><stop offset="100%" stop-color="#182848"/></linearGradient></defs><rect width="300" height="240" fill="url(#g4)"/>${Array.from({length:7},(_,i)=>`<path d="M0 ${56+i*26} Q75 ${46+i*26} 150 ${56+i*26} Q225 ${66+i*26} 300 ${56+i*26}" stroke="rgba(255,255,255,${(0.032+i*0.013).toFixed(3)})" stroke-width="${(0.88+i*0.26).toFixed(2)}" fill="none"/>`).join('')}<text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(195,225,252,.35)">still waters</text></svg>`},
-  {id:'d5',name:'Portrait of Us',sub:'demo · add your photo',data:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g5" cx="50%" cy="40%"><stop offset="0%" stop-color="#d0a468"/><stop offset="70%" stop-color="#885028"/><stop offset="100%" stop-color="#281408"/></radialGradient></defs><rect width="300" height="240" fill="url(#g5)"/><ellipse cx="150" cy="98" rx="53" ry="63" fill="rgba(255,238,218,.1)"/><ellipse cx="150" cy="78" rx="29" ry="31" fill="rgba(255,228,198,.15)"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(255,228,178,.35)">portrait of us</text></svg>`}
+const BUCKET = 'gallery'; // Supabase Storage bucket name
+
+/* ── DEMO SVG PAINTINGS ── */
+const DEMOS = [
+  {id:'d0',name:'Our First Memory',date:'Add your first photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g0" cx="40%" cy="40%"><stop offset="0%" stop-color="#b8909a"/><stop offset="60%" stop-color="#785868"/><stop offset="100%" stop-color="#302030"/></radialGradient></defs><rect width="300" height="240" fill="url(#g0)"/><ellipse cx="150" cy="120" rx="80" ry="70" fill="rgba(220,190,200,.15)"/><circle cx="105" cy="92" r="34" fill="rgba(240,210,215,.1)"/><circle cx="198" cy="148" r="44" fill="rgba(160,100,120,.18)"/><path d="M60 180 Q120 105 180 140 Q238 178 278 122" stroke="rgba(240,215,220,.22)" stroke-width="2" fill="none"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(240,215,220,.3)">our first memory</text></svg>`},
+  {id:'d1',name:'Golden Days',date:'Add your photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#90b8d0"/><stop offset="100%" stop-color="#d0a868"/></linearGradient></defs><rect width="300" height="155" fill="url(#g1)"/><rect y="155" width="300" height="85" fill="#886040"/><path d="M0 148 Q75 128 150 152 Q225 174 300 142" fill="#7a5818"/><circle cx="238" cy="46" r="21" fill="rgba(255,230,140,.3)"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(255,238,195,.42)">golden days</text></svg>`},
+  {id:'d2',name:'Our Nights',date:'Add your photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g2" cx="50%" cy="30%"><stop offset="0%" stop-color="#282858"/><stop offset="100%" stop-color="#080610"/></radialGradient></defs><rect width="300" height="240" fill="url(#g2)"/><circle cx="218" cy="58" r="17" fill="rgba(255,248,218,.65)"/><circle cx="58" cy="38" r="2" fill="rgba(255,255,255,.75)"/><circle cx="98" cy="28" r="1.5" fill="rgba(255,255,255,.65)"/><circle cx="178" cy="18" r="2" fill="rgba(255,255,255,.6)"/><path d="M0 178 Q78 148 150 168 Q218 188 300 162 L300 240 L0 240Z" fill="#180e06"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(195,178,252,.35)">our nights</text></svg>`},
+  {id:'d3',name:'Our Garden',date:'Add your photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="300" height="240" fill="#ede4cc"/><rect y="158" width="300" height="82" fill="#688038"/><rect y="148" width="300" height="18" fill="#88a848" opacity=".6"/><line x1="27" y1="158" x2="25" y2="87" stroke="#588028" stroke-width="2"/><circle cx="25" cy="82" r="11" fill="#b07888" opacity=".75"/><line x1="59" y1="158" x2="57" y2="96" stroke="#588028" stroke-width="2"/><circle cx="57" cy="91" r="11" fill="#e0a870" opacity=".75"/><line x1="91" y1="158" x2="89" y2="87" stroke="#588028" stroke-width="2"/><circle cx="89" cy="82" r="11" fill="#d0b850" opacity=".75"/><line x1="123" y1="158" x2="121" y2="96" stroke="#588028" stroke-width="2"/><circle cx="121" cy="91" r="11" fill="#8890c8" opacity=".75"/><line x1="155" y1="158" x2="153" y2="87" stroke="#588028" stroke-width="2"/><circle cx="153" cy="82" r="11" fill="#b07888" opacity=".75"/><line x1="187" y1="158" x2="185" y2="96" stroke="#588028" stroke-width="2"/><circle cx="185" cy="91" r="11" fill="#e0a870" opacity=".75"/><line x1="219" y1="158" x2="217" y2="87" stroke="#588028" stroke-width="2"/><circle cx="217" cy="82" r="11" fill="#d0b850" opacity=".75"/><line x1="251" y1="158" x2="249" y2="96" stroke="#588028" stroke-width="2"/><circle cx="249" cy="91" r="11" fill="#8890c8" opacity=".75"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(80,60,28,.35)">our garden</text></svg>`},
+  {id:'d4',name:'Still Waters',date:'Add your photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5888a8"/><stop offset="100%" stop-color="#182848"/></linearGradient></defs><rect width="300" height="240" fill="url(#g4)"/><path d="M0 56 Q75 46 150 56 Q225 66 300 56" stroke="rgba(255,255,255,.035)" stroke-width=".88" fill="none"/><path d="M0 82 Q75 72 150 82 Q225 92 300 82" stroke="rgba(255,255,255,.048)" stroke-width="1.14" fill="none"/><path d="M0 108 Q75 98 150 108 Q225 118 300 108" stroke="rgba(255,255,255,.061)" stroke-width="1.4" fill="none"/><path d="M0 134 Q75 124 150 134 Q225 144 300 134" stroke="rgba(255,255,255,.074)" stroke-width="1.66" fill="none"/><path d="M0 160 Q75 150 150 160 Q225 170 300 160" stroke="rgba(255,255,255,.087)" stroke-width="1.92" fill="none"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(195,225,252,.35)">still waters</text></svg>`},
+  {id:'d5',name:'Portrait of Us',date:'Add your photo',uploader:'',path:null,type:'demo',svg:`<svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><radialGradient id="g5" cx="50%" cy="40%"><stop offset="0%" stop-color="#d0a468"/><stop offset="70%" stop-color="#885028"/><stop offset="100%" stop-color="#281408"/></radialGradient></defs><rect width="300" height="240" fill="url(#g5)"/><ellipse cx="150" cy="98" rx="53" ry="63" fill="rgba(255,238,218,.1)"/><ellipse cx="150" cy="78" rx="29" ry="31" fill="rgba(255,228,198,.15)"/><ellipse cx="150" cy="113" rx="39" ry="19" fill="rgba(198,158,108,.15)"/><text x="150" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="10.5" fill="rgba(255,228,178,.35)">portrait of us</text></svg>`}
 ];
 
-// Parallax & dust
+/* ── PARALLAX & DUST ── */
 const rceil=document.getElementById('rceil'),rtrack=document.getElementById('rtrack'),rfloor=document.getElementById('rfloor'),rbase=document.getElementById('rbase'),rwall=document.getElementById('rwall');
 let _tk=false;
 window.addEventListener('scroll',()=>{if(!_tk){requestAnimationFrame(()=>{const sy=window.scrollY;rceil.style.transform='translateY('+(sy*.05)+'px)';rtrack.style.transform='translateY('+(sy*.05)+'px)';rfloor.style.transform='translateY('+(-sy*.1)+'px)';rbase.style.transform='translateY('+(-sy*.1)+'px)';rwall.style.transform='translateY('+(sy*.018)+'px)';_tk=false;});_tk=true;}},{passive:true});
 (function(){const c=document.getElementById('dust'),ctx=c.getContext('2d');let W,H;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}resize();window.addEventListener('resize',resize);const sXs=[.11,.24,.38,.52,.66,.80,.91];const ms=[];for(let i=0;i<90;i++)ms.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.3+.2,vx:(Math.random()-.5)*.18,vy:-(Math.random()*.2+.04),a:Math.random()*.07+.012,ph:Math.random()*Math.PI*2,fr:Math.random()*.006+.002});let t=0;function draw(){ctx.clearRect(0,0,W,H);t+=.008;for(const m of ms){m.x+=m.vx+Math.sin(t*m.fr+m.ph)*.26;m.y+=m.vy;if(m.y<-5){m.y=H+5;m.x=Math.random()*W;}if(m.x<0)m.x=W;if(m.x>W)m.x=0;let a=m.a;const wt=H*.2,wb=H*.76;if(m.y>wt&&m.y<wb){for(const sx of sXs){const cx=sx*W,cw=85,dx2=Math.abs(m.x-cx);if(dx2<cw){const fr=1-dx2/cw,yf=Math.max(0,1-(m.y-wt)/(wb-wt)*.7);a=Math.min(.5,a+fr*yf*.24);}}}ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);ctx.fillStyle='rgba(200,185,150,'+a+')';ctx.fill();}requestAnimationFrame(draw);}draw();})();
 
-// Drag & drop
+/* ── DRAG & DROP ── */
 let dc=0;
 document.addEventListener('dragenter',e=>{e.preventDefault();dc++;document.getElementById('dh').classList.add('show');});
 document.addEventListener('dragleave',()=>{dc--;if(dc<=0){dc=0;document.getElementById('dh').classList.remove('show');}});
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{e.preventDefault();dc=0;document.getElementById('dh').classList.remove('show');handleFiles(e.dataTransfer.files);});
 
-// Upload — store base64 in Supabase gallery table
-function handleFiles(files){
-  const arr=Array.from(files);if(!arr.length)return;let loaded=0;
-  arr.forEach(file=>{
-    const r=new FileReader();
-    r.onload=async e=>{
-      const item={
-        id:Date.now()+'_'+Math.random().toString(36).slice(2),
-        name:file.name.replace(/\.[^.]+$/,''),
-        type:file.type.startsWith('video')?'video':'image',
-        data:e.target.result,
-        date:new Date().toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}),
-        uploader:user
-      };
-      try{
-        const{error}=await db.from('gallery').insert(item);
-        if(error)throw error;
-      }catch(ex){
-        // Fallback to localStorage
-        console.log('Gallery save fallback:',ex);
-        const items=JSON.parse(localStorage.getItem('gallery_items'))||[];
-        items.push(item);
-        localStorage.setItem('gallery_items',JSON.stringify(items));
-      }
-      loaded++;
-      if(loaded===arr.length){await render();showToast(loaded===1?'Memory added ♥':loaded+' memories added ♥');}
-    };
-    r.readAsDataURL(file);
-  });
+/* ── UPLOAD TO SUPABASE STORAGE ── */
+async function handleFiles(files) {
+  const arr = Array.from(files);
+  if (!arr.length) return;
+
+  // Show progress bar
+  const prog = document.getElementById('uprogress');
+  const bar  = document.getElementById('uprogress-bar');
+  prog.classList.add('show');
+  bar.style.width = '0%';
+
+  let uploaded = 0;
+
+  for (const file of arr) {
+    try {
+      // Unique file path in storage
+      const ext = file.name.split('.').pop();
+      const fileType = file.type.startsWith('video') ? 'video' : 'image';
+      const path = `${user}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+      // 1. Upload file to Supabase Storage
+      const { error: uploadError } = await db.storage
+        .from(BUCKET)
+        .upload(path, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get public URL
+      const { data: urlData } = db.storage.from(BUCKET).getPublicUrl(path);
+      const publicUrl = urlData.publicUrl;
+
+      // 3. Save metadata to gallery table
+      const { error: dbError } = await db.from('gallery').insert({
+        id: Date.now() + '_' + Math.random().toString(36).slice(2),
+        name: file.name.replace(/\.[^.]+$/, ''),
+        type: fileType,
+        path: path,
+        url: publicUrl,
+        date: new Date().toLocaleDateString([], {month:'long',day:'numeric',year:'numeric'}),
+        uploader: user
+      });
+
+      if (dbError) throw dbError;
+
+      uploaded++;
+      bar.style.width = Math.round((uploaded / arr.length) * 100) + '%';
+
+    } catch (err) {
+      console.error('Upload error:', err);
+      showToast('Upload failed — check storage bucket ♥');
+    }
+  }
+
+  setTimeout(() => {
+    prog.classList.remove('show');
+    bar.style.width = '0%';
+  }, 600);
+
+  await render();
+  showToast(uploaded === 1 ? 'Memory framed ♥' : `${uploaded} memories framed ♥`);
 }
 
-// Load items from Supabase (+ localStorage fallback)
-async function getItems(){
-  try{
-    const{data,error}=await db.from('gallery').select('*').order('created_at',{ascending:true});
-    if(error)throw error;
-    return data||[];
-  }catch(e){
-    console.log('Gallery load fallback:',e);
-    return JSON.parse(localStorage.getItem('gallery_items'))||[];
+/* ── LOAD ITEMS FROM SUPABASE ── */
+async function getItems() {
+  try {
+    const { data, error } = await db.from('gallery')
+      .select('*')
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.log('Gallery load error:', e);
+    return [];
   }
 }
 
-const SIZES=['fmd','flg','fxl','fsm','ftall','fwide','flg','fmd'];
-const TILTS=[-1.7,1.4,-1.0,2.2,-2.4,0.7,1.8,-1.3,0.5,-1.9,1.1,-0.6];
-function wireHTML(){return `<svg class="pf-wire" viewBox="0 0 65 38" fill="none"><path d="M32 2 Q13 17 4 36" stroke="rgba(80,70,45,.22)" stroke-width=".8"/><path d="M32 2 Q52 17 62 36" stroke="rgba(80,70,45,.22)" stroke-width=".8"/></svg>`;}
+/* ── FRAME CONFIG ── */
+const SIZES  = ['fmd','flg','fxl','fsm','ftall','fwide','flg','fmd'];
+const TILTS  = [-1.7,1.4,-1.0,2.2,-2.4,0.7,1.8,-1.3,0.5,-1.9,1.1,-0.6];
+function wireHTML(){
+  return `<svg class="pf-wire" viewBox="0 0 65 38" fill="none">
+    <path d="M32 2 Q13 17 4 36" stroke="rgba(80,70,45,.22)" stroke-width=".8"/>
+    <path d="M32 2 Q52 17 62 36" stroke="rgba(80,70,45,.22)" stroke-width=".8"/>
+  </svg>`;
+}
 
-async function render(){
-  const stored=await getItems();
-  const demosNeeded=Math.max(0,6-stored.length);
-  const all=[...stored,...DEMOS.slice(0,demosNeeded)];
-  const root=document.getElementById('groot');
-  if(all.length===0){root.innerHTML='<div class="mroom"><div class="fwall"><div class="empty-wall"><div class="ef">&#128444;&#65039;</div><div class="e-txt">This room waits for your memories.<br><small style="font-size:14px;opacity:.6">Click "+ Add Memory" to begin</small></div></div></div></div>';return;}
-  const rooms=[];let i=0,pat=[3,2,3,2,4],pi=0;
-  while(i<all.length){const sz=Math.min(pat[pi%pat.length],all.length-i);rooms.push(all.slice(i,i+sz));i+=sz;pi++;}
-  let gi=0;const BASE=0.25;
-  root.innerHTML=rooms.map((room,ri)=>{
-    const fh=room.map(item=>{
-      const idx=gi++;const size=SIZES[idx%SIZES.length];const tilt=TILTS[idx%TILTS.length];const fd=(BASE+idx*.13).toFixed(2)+'s';
-      let media='';
-      if(item.type==='demo'||item.svg)media=`<div class="pf-demo">${item.svg}</div>`;
-      else if(item.type==='video')media=`<video class="pf-img" src="${item.data}" muted preload="metadata"></video><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;color:rgba(30,45,74,.5);z-index:3">&#9654;</div>`;
-      else media=`<img class="pf-img" src="${item.data}" alt="${esc(item.name)}" loading="lazy">`;
-      return `<div class="pf ${size}" style="--tilt:${tilt}deg;--fd:${fd}" onclick="openLB('${item.id}')"><div class="pf-nail"></div>${wireHTML()}<div class="pf-glow"></div><div class="pf-outer"><div class="pf-frame"><div class="pf-mat">${media}</div></div><div class="pf-plate"><span class="pf-pt">${esc(item.name)}</span><span class="pf-ps">${item.type==='demo'?item.sub:(item.date||'')}</span></div></div></div>`;
+/* ── RENDER GALLERY ── */
+async function render() {
+  const stored = await getItems();
+  const demosNeeded = Math.max(0, 6 - stored.length);
+  const all = [...stored, ...DEMOS.slice(0, demosNeeded)];
+  const root = document.getElementById('groot');
+
+  if (all.length === 0) {
+    root.innerHTML = `<div class="mroom"><div class="fwall"><div class="empty-wall">
+      <div class="ef">🖼️</div>
+      <div class="e-txt">This room waits for your memories.<br><small style="font-size:14px;opacity:.6">Click "+ Add Memory" to begin</small></div>
+    </div></div></div>`;
+    return;
+  }
+
+  // Group into rooms
+  const rooms = [];
+  let i = 0, pat = [3,2,3,2,4], pi = 0;
+  while (i < all.length) {
+    const sz = Math.min(pat[pi % pat.length], all.length - i);
+    rooms.push(all.slice(i, i + sz));
+    i += sz; pi++;
+  }
+
+  let gi = 0; const BASE = 0.25;
+  root.innerHTML = rooms.map((room, ri) => {
+    const fh = room.map(item => {
+      const idx  = gi++;
+      const size = SIZES[idx % SIZES.length];
+      const tilt = TILTS[idx % TILTS.length];
+      const fd   = (BASE + idx * 0.13).toFixed(2) + 's';
+
+      let media = '';
+      if (item.type === 'demo' || item.svg) {
+        media = `<div class="pf-demo">${item.svg}</div>`;
+      } else if (item.type === 'video') {
+        // Use public URL from Supabase Storage
+        media = `<video class="pf-img" src="${item.url}" muted preload="metadata"></video>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;color:rgba(30,45,74,.5);z-index:3">▶</div>`;
+      } else {
+        // Image from Supabase Storage — use public URL
+        media = `<img class="pf-img" src="${item.url}" alt="${esc(item.name)}" loading="lazy">`;
+      }
+
+      return `<div class="pf ${size}" style="--tilt:${tilt}deg;--fd:${fd}" onclick="openLB('${item.id}')">
+        <div class="pf-nail"></div>
+        ${wireHTML()}
+        <div class="pf-glow"></div>
+        <div class="pf-outer">
+          <div class="pf-frame">
+            <div class="pf-mat">${media}</div>
+          </div>
+          <div class="pf-plate">
+            <span class="pf-pt">${esc(item.name)}</span>
+            <span class="pf-ps">${item.type === 'demo' ? 'demo · add your photo' : (item.date || '')}</span>
+          </div>
+        </div>
+      </div>`;
     }).join('');
-    const arch=ri<rooms.length-1?`<div class="rarch"><div class="ra-line"></div><span class="ra-orn">—</span><span class="ra-lbl">continues</span><div class="ra-line"></div></div>`:'';
-    return `<div class="mroom"><div class="rlabel"><span class="rl-num">Room ${ri+1}</span><div class="rl-line"></div></div><div class="fwall">${fh}</div></div>${arch}`;
+
+    const arch = ri < rooms.length - 1
+      ? `<div class="rarch"><div class="ra-line"></div><span class="ra-orn">—</span><span class="ra-lbl">continues</span><div class="ra-line"></div></div>`
+      : '';
+
+    return `<div class="mroom">
+      <div class="rlabel"><span class="rl-num">Room ${ri + 1}</span><div class="rl-line"></div></div>
+      <div class="fwall">${fh}</div>
+    </div>${arch}`;
   }).join('');
 }
 
-// Lightbox
-let lbId=null;
-async function openLB(id){
-  const all=[...await getItems(),...DEMOS];
-  const item=all.find(i=>i.id===id);if(!item)return;lbId=id;
-  const img=document.getElementById('lbi'),vid=document.getElementById('lbv');
-  const exs=document.getElementById('lb-svg');if(exs)exs.remove();
-  if(item.type==='demo'||item.svg){img.style.display='none';vid.style.display='none';const w=document.createElement('div');w.id='lb-svg';w.style.cssText='width:min(82vw,500px)';w.innerHTML=item.svg;document.querySelector('.lb-mat').appendChild(w);}
-  else if(item.type==='video'){img.style.display='none';vid.style.display='block';vid.src=item.data;}
-  else{vid.style.display='none';img.style.display='block';img.src=item.data;}
-  document.getElementById('lbt').textContent=item.name;
-  document.getElementById('lbd').textContent=(item.type==='demo')?'Demo · add your own photo':(item.date+' · '+(item.uploader||''));
+/* ── LIGHTBOX ── */
+let lbId = null;
+let lbPath = null;
+
+async function openLB(id) {
+  const all = [...await getItems(), ...DEMOS];
+  const item = all.find(i => i.id === id);
+  if (!item) return;
+  lbId = id;
+  lbPath = item.path || null;
+
+  const img = document.getElementById('lbi');
+  const vid = document.getElementById('lbv');
+  const exs = document.getElementById('lb-svg');
+  if (exs) exs.remove();
+
+  if (item.type === 'demo' || item.svg) {
+    img.style.display = 'none'; vid.style.display = 'none';
+    const w = document.createElement('div');
+    w.id = 'lb-svg'; w.style.cssText = 'width:min(82vw,500px)';
+    w.innerHTML = item.svg;
+    document.querySelector('.lb-mat').appendChild(w);
+  } else if (item.type === 'video') {
+    img.style.display = 'none'; vid.style.display = 'block';
+    vid.src = item.url;
+  } else {
+    vid.style.display = 'none'; img.style.display = 'block';
+    img.src = item.url;
+  }
+
+  document.getElementById('lbt').textContent = item.name;
+  document.getElementById('lbd').textContent = item.type === 'demo'
+    ? 'Demo · add your own photo'
+    : (item.date + ' · ' + (item.uploader || ''));
+
   document.getElementById('lb').classList.add('open');
 }
-function closeLB(){document.getElementById('lb').classList.remove('open');const v=document.getElementById('lbv');v.pause();v.src='';lbId=null;}
-async function delFromLB(){
-  if(!lbId||lbId.startsWith('d'))return;
-  if(!confirm('Remove this memory from the gallery?'))return;
-  try{
-    const{error}=await db.from('gallery').delete().eq('id',lbId);
-    if(error)throw error;
-  }catch(e){
-    const items=JSON.parse(localStorage.getItem('gallery_items'))||[];
-    localStorage.setItem('gallery_items',JSON.stringify(items.filter(i=>i.id!==lbId)));
-  }
-  closeLB();await render();showToast('Removed');
-}
-document.getElementById('lb').addEventListener('click',e=>{if(e.target===document.getElementById('lb'))closeLB();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
 
-// Real-time sync
-db.channel('gallery-changes')
-  .on('postgres_changes',{event:'*',schema:'public',table:'gallery'},()=>render())
+function closeLB() {
+  document.getElementById('lb').classList.remove('open');
+  const v = document.getElementById('lbv');
+  v.pause(); v.src = '';
+  lbId = null; lbPath = null;
+}
+
+async function delFromLB() {
+  if (!lbId || lbId.startsWith('d')) return;
+  if (!confirm('Remove this memory from the gallery?')) return;
+
+  try {
+    // Delete from Storage
+    if (lbPath) {
+      await db.storage.from(BUCKET).remove([lbPath]);
+    }
+    // Delete metadata from DB
+    await db.from('gallery').delete().eq('id', lbId);
+  } catch (e) {
+    console.error('Delete error:', e);
+  }
+
+  closeLB();
+  await render();
+  showToast('Removed from the gallery');
+}
+
+document.getElementById('lb').addEventListener('click', e => {
+  if (e.target === document.getElementById('lb')) closeLB();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+
+/* ── REAL-TIME SYNC ── */
+db.channel('gallery-rt')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery' }, () => render())
   .subscribe();
 
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+/* ── HELPERS ── */
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
 
 render();
 </script>
