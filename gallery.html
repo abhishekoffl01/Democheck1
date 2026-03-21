@@ -221,80 +221,58 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 function uid(){return Date.now()+'_'+Math.random().toString(36).slice(2);}
 
 // ── UPLOAD ──
-// Tries Supabase Storage first, falls back to base64 in DB if storage not set up
 async function handleFiles(files){
   const arr=Array.from(files);
   if(!arr.length)return;
   const prog=document.getElementById('uprogress');
   const bar=document.getElementById('uprogress-bar');
-  prog.classList.add('show');
-  bar.style.width='5%';
-  let done=0;
+  prog.classList.add('show');bar.style.width='5%';
+  let done=0,failed=0;
 
   for(const file of arr){
     try{
       const fileType=file.type.startsWith('video')?'video':'image';
-      const ext=file.name.split('.').pop().toLowerCase();
-      const safeName=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9_\-]/gi,'_');
-      const storagePath=`${user}/${uid()}_${safeName}.${ext}`;
-      const itemId=uid();
+      const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+      const storagePath=user+'/'+Date.now()+'_'+Math.random().toString(36).slice(2)+'.'+ext;
+      const itemId=Date.now()+'_'+Math.random().toString(36).slice(2);
       const dateStr=new Date().toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'});
+      const cleanName=file.name.replace(/\.[^.]+$/,'');
 
-      // Try Storage upload first
-      const {error:storErr}=await db.storage
-        .from('gallery')
-        .upload(storagePath, file, {cacheControl:'3600',upsert:false});
+      console.log('Uploading:',file.name,'to',storagePath);
 
-      if(!storErr){
-        // Storage worked — get public URL
-        const {data:urlData}=db.storage.from('gallery').getPublicUrl(storagePath);
-        await db.from('gallery').insert({
-          id:itemId,
-          name:file.name.replace(/\.[^.]+$/,''),
-          type:fileType,
-          path:storagePath,
-          url:urlData.publicUrl,
-          data:null,
-          date:dateStr,
-          uploader:user
-        });
+      // Upload to Storage
+      const{error:storErr}=await db.storage.from('gallery').upload(storagePath,file,{cacheControl:'3600',upsert:false});
+
+      if(storErr){
+        // Storage failed — save as base64
+        console.warn('Storage failed, using base64:',storErr.message);
+        const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});
+        const{error:e2}=await db.from('gallery').insert({id:itemId,name:cleanName,type:fileType,path:null,url:null,data:b64,date:dateStr,uploader:user});
+        if(e2){console.error('Base64 insert failed:',e2.message);failed++;continue;}
       } else {
-        // Storage failed (bucket not set up) — fallback to base64 in DB
-        console.log('Storage not available, using base64 fallback');
-        const b64=await fileToBase64(file);
-        await db.from('gallery').insert({
-          id:itemId,
-          name:file.name.replace(/\.[^.]+$/,''),
-          type:fileType,
-          path:null,
-          url:null,
-          data:b64,
-          date:dateStr,
-          uploader:user
-        });
+        // Get public URL and save metadata
+        const{data:ud}=db.storage.from('gallery').getPublicUrl(storagePath);
+        console.log('Stored at:',ud.publicUrl);
+        const{error:e3}=await db.from('gallery').insert({id:itemId,name:cleanName,type:fileType,path:storagePath,url:ud.publicUrl,data:null,date:dateStr,uploader:user});
+        if(e3){
+          console.error('DB insert failed:',e3.message);
+          // Try minimal insert — maybe path/url columns missing
+          const{error:e4}=await db.from('gallery').insert({id:itemId,name:cleanName,type:fileType,data:ud.publicUrl,date:dateStr,uploader:user});
+          if(e4){console.error('Minimal insert also failed:',e4.message);failed++;continue;}
+        }
       }
-
       done++;
       bar.style.width=Math.round((done/arr.length)*100)+'%';
-
     }catch(err){
-      console.error('Upload failed:',err);
-      showToast('Could not upload — try a smaller file');
+      console.error('Upload error:',err);
+      failed++;
     }
   }
 
-  setTimeout(()=>{prog.classList.remove('show');bar.style.width='0%';},700);
+  setTimeout(()=>{prog.classList.remove('show');bar.style.width='0%';},800);
   await render();
-  if(done>0) showToast(done===1?'Memory framed ♥':done+' memories framed ♥');
-}
-
-function fileToBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=e=>res(e.target.result);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
+  if(done>0)showToast(done===1?'Memory framed ♥':done+' memories framed ♥');
+  if(failed>0)showToast(failed+' file(s) failed — check browser console');
 }
 
 // ── LOAD FROM DB ──
@@ -343,8 +321,12 @@ async function render(){
       const size=SIZES[idx%SIZES.length];
       const tilt=TILTS[idx%TILTS.length];
       const fd=(BASE+idx*0.12).toFixed(2)+'s';
-      // src: prefer Storage URL, fallback to base64 data
-      const src=item.url||item.data||'';
+      // src — Storage URL preferred, then base64 data, then data if it's a URL
+      let src=item.url||'';
+      if(!src&&item.data){
+        // data might be base64 OR a URL stored as fallback
+        src=item.data;
+      }
       let media='';
       if(item.type==='video'){
         media=`<video class="pf-img" src="${src}" muted preload="metadata"></video>
