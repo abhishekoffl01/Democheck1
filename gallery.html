@@ -81,9 +81,9 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .pf-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f0e8;font-size:24px;opacity:.4;}
 .pf-glow{position:absolute;top:-65px;left:50%;transform:translateX(-50%);width:250%;height:200px;background:radial-gradient(ellipse,rgba(255,245,210,.12) 0%,transparent 62%);opacity:0;pointer-events:none;z-index:-1;transition:opacity .4s;}
 .pf:hover .pf-glow{opacity:1;}
-.pf-plate{display:table;margin:8px auto 0;background:var(--navy);padding:4px 14px 5px;border-radius:1px;box-shadow:1px 1px 6px rgba(20,15,10,.15);max-width:calc(100% - 16px);}
-.pf-pt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(240,236,228,.9);letter-spacing:.05em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
-.pf-ps{font-size:9px;color:rgba(180,190,210,.5);letter-spacing:.07em;display:block;}
+
+
+
 /* Frame sizes */
 .fsm .pf-mat{width:145px;height:125px;}.fmd .pf-mat{width:195px;height:160px;}.flg .pf-mat{width:252px;height:202px;}.fxl .pf-mat{width:310px;height:246px;}.ftall .pf-mat{width:150px;height:212px;}.fwide .pf-mat{width:280px;height:158px;}
 /* Arch */
@@ -338,10 +338,7 @@ async function render(){
         <div class="pf-nail"></div>${wireHTML()}<div class="pf-glow"></div>
         <div class="pf-outer">
           <div class="pf-frame"><div class="pf-mat">${media}</div></div>
-          <div class="pf-plate">
-            <span class="pf-pt">${esc(item.name)}</span>
-            <span class="pf-ps">${item.date||''}</span>
-          </div>
+
         </div>
       </div>`;
     }).join('');
