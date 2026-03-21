@@ -45,10 +45,8 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 .hbtn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;color:var(--text-soft);background:transparent;border:1px solid rgba(30,45,74,.14);border-radius:2px;padding:7px 16px;cursor:pointer;transition:all .25s;text-transform:uppercase;font-weight:500;}
 .hbtn:hover{color:var(--navy);border-color:rgba(30,45,74,.3);background:rgba(30,45,74,.04);}
 /* Upload button */
-.upload-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;color:white;background:var(--navy);border:none;border-radius:2px;padding:8px 18px;cursor:pointer;position:relative;overflow:hidden;transition:background .3s;font-weight:500;text-transform:uppercase;}
+.upload-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;color:white;background:var(--navy);border:none;border-radius:2px;padding:8px 18px;cursor:pointer;transition:background .3s;font-weight:500;text-transform:uppercase;}
 .upload-btn:hover{background:var(--navy2);}
-.upload-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;}
-.upload-btn span{position:relative;z-index:1;}
 /* Upload progress */
 .upload-progress{position:fixed;top:0;left:0;right:0;z-index:200;height:3px;background:rgba(30,45,74,.1);display:none;}
 .upload-progress-bar{height:100%;background:var(--navy);width:0%;transition:width .3s ease;}
@@ -156,10 +154,8 @@ canvas.dust{position:fixed;inset:0;z-index:4;pointer-events:none;}
 <header class="site-header">
   <div class="brand"><div class="brand-mono">ow</div><span class="brand-name">Our Gallery</span></div>
   <div class="hbtns">
-    <label class="upload-btn">
-      <input type="file" id="fi" multiple accept="image/*,video/*" onchange="handleFiles(this.files)">
-      <span>+ Add Memory</span>
-    </label>
+    <button class="upload-btn" onclick="document.getElementById('fi').click()">+ Add Memory</button>
+    <input type="file" id="fi" multiple accept="image/*,video/*" style="display:none" onchange="handleFiles(this.files)">
     <button class="hbtn" onclick="window.location.href='home.html'">&#8592; Home</button>
   </div>
 </header>
