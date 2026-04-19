@@ -196,8 +196,9 @@ canvas.fx{position:fixed;inset:0;z-index:4;pointer-events:none}
 <div class="toast" id="toast"></div>
 <script>
 
-const user=localStorage.getItem('user');
-if(!user)location.href='index.html';
+const user=localStorage.getItem('user')||sessionStorage.getItem('user');
+if(!user){location.href='index.html';}
+if(user&&!localStorage.getItem('user'))localStorage.setItem('user',user);
 const isAdmin=user===ADMIN;
 function showToast(m,d=2800){const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d)}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>')}
