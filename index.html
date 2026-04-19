@@ -70,7 +70,7 @@ function doLogin(){
     document.getElementById('lbtn').textContent='Opening the doors…';
     localStorage.setItem('user',u);
     db.from('presence').upsert({username:u,last_seen:Date.now(),is_online:true},{onConflict:'username'}).catch(()=>{});
-    setTimeout(()=>location.href='home.html',900);
+    location.href='home.html';
   }else{
     document.getElementById('pwd').value='';
     void err.offsetWidth;err.classList.add('show');
