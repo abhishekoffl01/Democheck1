@@ -2,57 +2,65 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
 <title>A place kept for you</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@500;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>const SUPA_URL="https://rxsypivleyjdnpqitzhf.supabase.co";const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4c3lwaXZsZXlqZG5wcWl0emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODQ2NTQsImV4cCI6MjA4OTY2MDY1NH0.uIwKE9BJYtQUvuEqo5pDm7OBIRRUv3MVkdRo_w7rJ-w";const db=supabase.createClient(SUPA_URL,SUPA_KEY);const ADMIN="Abhi";const GUEST="Ganu";</script>
+<script>
+const SUPA_URL="https://rxsypivleyjdnpqitzhf.supabase.co";const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4c3lwaXZsZXlqZG5wcWl0emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODQ2NTQsImV4cCI6MjA4OTY2MDY1NH0.uIwKE9BJYtQUvuEqo5pDm7OBIRRUv3MVkdRo_w7rJ-w";
+const db=supabase.createClient(SUPA_URL,SUPA_KEY);
+const ADMIN="Abhi";const GUEST="Ganu";
+const VAPID_PUBLIC="BPgpWbtwZyz0VLg0UyyNs0SbMzZm3_-d3oiXeteHQnJTyPNw2eyOwBBAZIX5PbeLj3EVPGjRFqiZ0Qc44kogc8M";
+</script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;font-family:'Jost',sans-serif;}
-body{background:linear-gradient(160deg,#0a0e1a 0%,#0d1525 40%,#0a1020 100%);}
-.star{position:fixed;border-radius:50%;background:#fff;animation:twk var(--d,3s) ease-in-out infinite alternate;}
-@keyframes twk{0%{opacity:.1;}100%{opacity:var(--op,.5);}}
-.petal{position:fixed;z-index:5;pointer-events:none;animation:pfall linear infinite;}
-@keyframes pfall{0%{transform:translateY(-30px) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:.6;}100%{transform:translateY(105vh) rotate(360deg);opacity:0;}}
-.lw{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;animation:fu .9s ease both;}
-@keyframes fu{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
-.lc{background:rgba(0,0,0,.76);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:48px 44px 40px;width:min(410px,90vw);text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden;}
-.lc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,rgba(200,163,110,.4),rgba(212,165,160,.5),rgba(200,163,110,.4));}
-.lb{font-size:40px;margin:0 auto 20px;display:block;animation:bp 3s ease-in-out infinite;}
-@keyframes bp{0%,100%{transform:scale(1);}50%{transform:scale(1.1) rotate(4deg);}}
-.lt{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:#fff;margin-bottom:8px;text-shadow:0 2px 10px rgba(0,0,0,.6);}
-.lt em{font-style:italic;color:rgba(200,163,110,.9);}
-.ls{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:rgba(255,255,255,.5);margin-bottom:28px;line-height:1.55;text-shadow:0 1px 6px rgba(0,0,0,.5);}
-.ld{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
-.ldl{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);}
-.lf{margin-bottom:16px;text-align:left;}
-.lf label{display:block;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px;font-weight:500;}
-.lf input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.14);border-radius:10px;padding:11px 15px;font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;outline:none;transition:all .3s;}
-.lf input::placeholder{color:rgba(255,255,255,.25);font-style:italic;}
-.lf input:focus{border-color:rgba(200,163,110,.6);background:rgba(255,255,255,.11);}
-.le{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:rgba(220,120,120,.85);margin-bottom:12px;min-height:20px;text-align:center;opacity:0;transition:opacity .3s;}
-.le.show{opacity:1;animation:shk .4s ease;}
-@keyframes shk{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
-.btn-l{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;color:#000;background:rgba(200,163,110,.9);border:none;border-radius:24px;padding:13px 28px;cursor:pointer;transition:all .3s;width:100%;}
-.btn-l:hover{filter:brightness(1.1);}
-.ln{margin-top:18px;font-family:'Dancing Script',cursive;font-size:15px;color:rgba(255,255,255,.28);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Jost',sans-serif}
+body{background:linear-gradient(160deg,#0a0e1a 0%,#0d1525 40%,#0a1020 100%)}
+.star{position:fixed;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite alternate}
+@keyframes tw{0%{opacity:.08}100%{opacity:var(--op,.45)}}
+.pet{position:fixed;z-index:5;pointer-events:none;animation:pf linear infinite}
+@keyframes pf{0%{transform:translateY(-30px) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(105vh) rotate(360deg);opacity:0}}
+.lw{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;animation:fu .9s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.lc{background:rgba(0,0,0,.78);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.11);border-radius:24px;padding:46px 42px 38px;width:min(408px,90vw);text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.lc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,rgba(200,163,110,.35),rgba(212,165,160,.45),rgba(200,163,110,.35))}
+.lb{font-size:38px;margin:0 auto 18px;display:block;animation:bp 3s ease-in-out infinite}
+@keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.1) rotate(4deg)}}
+.lt{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;margin-bottom:7px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.lt em{font-style:italic;color:rgba(200,163,110,.88)}
+.ls{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,.45);margin-bottom:26px;line-height:1.55;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.ldv{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.ldvl{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent)}
+.lf{margin-bottom:14px;text-align:left}
+.lf label{display:block;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:7px;font-weight:500}
+.lf input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;outline:none;transition:all .3s}
+.lf input::placeholder{color:rgba(255,255,255,.22);font-style:italic}
+.lf input:focus{border-color:rgba(200,163,110,.55);background:rgba(255,255,255,.1)}
+.le{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(220,100,100,.8);margin-bottom:11px;min-height:18px;text-align:center;opacity:0;transition:opacity .3s}
+.le.show{opacity:1;animation:shk .4s ease}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.btn-l{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:#000;background:rgba(200,163,110,.88);border:none;border-radius:22px;padding:12px 26px;cursor:pointer;transition:all .3s;width:100%}
+.btn-l:hover{filter:brightness(1.1)}
+.ln{margin-top:16px;font-family:'Dancing Script',cursive;font-size:14px;color:rgba(255,255,255,.25)}
 </style>
 </head>
 <body>
 <div class="lw"><div class="lc">
   <span class="lb">&#127800;</span>
   <h1 class="lt">A place <em>kept for you</em></h1>
-  <p class="ls">Built with every memory we ever made.<br>Come inside.</p>
-  <div class="ld"><div class="ldl"></div><span style="font-size:11px;color:rgba(200,163,110,.6)">&#10023;</span><div class="ldl"></div></div>
-  <div class="lf"><label>Who are you</label><input id="usr" type="text" placeholder="Abhi or Ganu" onkeydown="if(event.key==='Enter')document.getElementById('pwd').focus()"></div>
-  <div class="lf"><label>Our secret</label><input id="pwd" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" onkeydown="if(event.key==='Enter')doLogin()"></div>
+  <p class="ls">Every memory we ever made.<br>Come inside.</p>
+  <div class="ldv"><div class="ldvl"></div><span style="font-size:11px;color:rgba(200,163,110,.55)">&#10023;</span><div class="ldvl"></div></div>
+  <div class="lf"><label>Who are you</label><input id="usr" type="text" placeholder="Abhi or Ganu" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('pwd').focus()"></div>
+  <div class="lf"><label>Our secret</label><input id="pwd" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
   <div class="le" id="lerr">That doesn't feel right.</div>
   <button class="btn-l" id="lbtn" onclick="doLogin()">Step Inside &#10023;</button>
   <p class="ln">built with love &middot; kept with care</p>
 </div></div>
 <script>
-for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(Math.random()*2+.5)+'px;height:'+(Math.random()*2+.5)+'px;--d:'+(2+Math.random()*4)+'s;--op:'+(Math.random()*.6+.1)+';animation-delay:'+(Math.random()*4)+'s;';document.body.appendChild(s);}
-['&#127800;','&#127826;','&#127804;','&#10023;','&#127801;'].forEach((e,j)=>{for(let i=0;i<4;i++){const p=document.createElement('div');p.className='petal';p.innerHTML=e;p.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*12)+'px;animation-duration:'+(8+Math.random()*10)+'s;animation-delay:'+(Math.random()*8)+'s;';document.body.appendChild(p);}}); 
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(Math.random()*2+.4)+'px;height:'+(Math.random()*2+.4)+'px;--d:'+(2+Math.random()*4)+'s;--op:'+(Math.random()*.55+.08)+';animation-delay:'+(Math.random()*4)+'s';document.body.appendChild(s)}
+const PE=['&#127800;','&#127826;','&#127804;','&#10023;','&#127801;'];
+for(let i=0;i<14;i++){const p=document.createElement('div');p.className='pet';p.innerHTML=PE[Math.floor(Math.random()*PE.length)];p.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*12)+'px;animation-duration:'+(8+Math.random()*10)+'s;animation-delay:'+(Math.random()*8)+'s';document.body.appendChild(p)}
 function doLogin(){
   const u=document.getElementById('usr').value.trim();
   const p=document.getElementById('pwd').value;
@@ -62,12 +70,11 @@ function doLogin(){
     document.getElementById('lbtn').textContent='Opening the doors…';
     localStorage.setItem('user',u);
     db.from('presence').upsert({username:u,last_seen:Date.now(),is_online:true},{onConflict:'username'}).catch(()=>{});
-    setTimeout(()=>window.location.href='home.html',900);
+    setTimeout(()=>location.href='home.html',900);
   }else{
     document.getElementById('pwd').value='';
     void err.offsetWidth;err.classList.add('show');
   }
 }
 </script>
-</body>
-</html>
+</body></html>
