@@ -1,80 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#000000">
-<link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>A place kept for you</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@500;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPA_URL="https://rxsypivleyjdnpqitzhf.supabase.co";const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4c3lwaXZsZXlqZG5wcWl0emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODQ2NTQsImV4cCI6MjA4OTY2MDY1NH0.uIwKE9BJYtQUvuEqo5pDm7OBIRRUv3MVkdRo_w7rJ-w";
-const db=supabase.createClient(SUPA_URL,SUPA_KEY);
-const ADMIN="Abhi";const GUEST="Ganu";
-const VAPID_PUBLIC="BPgpWbtwZyz0VLg0UyyNs0SbMzZm3_-d3oiXeteHQnJTyPNw2eyOwBBAZIX5PbeLj3EVPGjRFqiZ0Qc44kogc8M";
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Cormorant+Garamond:ital,wght@1,400&family=Dancing+Script:wght@600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;font-family:'Jost',sans-serif}
 body{background:linear-gradient(160deg,#0a0e1a 0%,#0d1525 40%,#0a1020 100%)}
 .star{position:fixed;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite alternate}
-@keyframes tw{0%{opacity:.08}100%{opacity:var(--op,.45)}}
-.pet{position:fixed;z-index:5;pointer-events:none;animation:pf linear infinite}
-@keyframes pf{0%{transform:translateY(-30px) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(105vh) rotate(360deg);opacity:0}}
-.lw{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;animation:fu .9s ease both}
-@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-.lc{background:rgba(0,0,0,.78);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.11);border-radius:24px;padding:46px 42px 38px;width:min(408px,90vw);text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden}
-.lc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,rgba(200,163,110,.35),rgba(212,165,160,.45),rgba(200,163,110,.35))}
-.lb{font-size:38px;margin:0 auto 18px;display:block;animation:bp 3s ease-in-out infinite}
+@keyframes tw{0%{opacity:.08}100%{opacity:var(--op,.4)}}
+.pet{position:fixed;z-index:5;pointer-events:none;font-size:var(--fs,16px);animation:pf var(--dur,10s) linear var(--del,0s) infinite}
+@keyframes pf{0%{transform:translateY(-40px) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:.5}100%{transform:translateY(110vh) rotate(360deg);opacity:0}}
+.wrap{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center}
+.card{background:rgba(0,0,0,.8);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:48px 44px 40px;width:min(400px,88vw);text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);position:relative;overflow:hidden;animation:fu .8s ease}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,rgba(200,163,110,.35),rgba(212,165,160,.5),rgba(200,163,110,.35))}
+.bloom{font-size:40px;display:block;margin:0 auto 18px;animation:bp 3s ease-in-out infinite}
 @keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.1) rotate(4deg)}}
-.lt{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;margin-bottom:7px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
-.lt em{font-style:italic;color:rgba(200,163,110,.88)}
-.ls{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,.45);margin-bottom:26px;line-height:1.55;text-shadow:0 1px 6px rgba(0,0,0,.5)}
-.ldv{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.ldvl{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent)}
-.lf{margin-bottom:14px;text-align:left}
-.lf label{display:block;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:7px;font-weight:500}
-.lf input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;outline:none;transition:all .3s}
-.lf input::placeholder{color:rgba(255,255,255,.22);font-style:italic}
-.lf input:focus{border-color:rgba(200,163,110,.55);background:rgba(255,255,255,.1)}
-.le{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(220,100,100,.8);margin-bottom:11px;min-height:18px;text-align:center;opacity:0;transition:opacity .3s}
-.le.show{opacity:1;animation:shk .4s ease}
-@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.btn-l{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:#000;background:rgba(200,163,110,.88);border:none;border-radius:22px;padding:12px 26px;cursor:pointer;transition:all .3s;width:100%}
-.btn-l:hover{filter:brightness(1.1)}
-.ln{margin-top:16px;font-family:'Dancing Script',cursive;font-size:14px;color:rgba(255,255,255,.25)}
+h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;margin-bottom:7px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+h1 em{font-style:italic;color:rgba(200,163,110,.9)}
+p{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(255,255,255,.45);margin-bottom:26px;line-height:1.55}
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent)}
+.field{margin-bottom:14px;text-align:left}
+.field label{display:block;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:7px;font-weight:500}
+.field input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.13);border-radius:10px;padding:11px 14px;font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;outline:none;transition:border-color .3s}
+.field input:focus{border-color:rgba(200,163,110,.6)}
+.field input::placeholder{color:rgba(255,255,255,.22);font-style:italic}
+.err{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(220,100,100,.85);margin-bottom:11px;min-height:18px;text-align:center;opacity:0;transition:opacity .3s}
+.err.show{opacity:1;animation:shk .4s ease}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.btn{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:#000;background:rgba(200,163,110,.9);border:none;border-radius:22px;padding:13px 28px;cursor:pointer;width:100%;transition:filter .3s}
+.btn:hover{filter:brightness(1.1)}
+.note{margin-top:16px;font-family:'Dancing Script',cursive;font-size:14px;color:rgba(255,255,255,.22)}
 </style>
 </head>
 <body>
-<div class="lw"><div class="lc">
-  <span class="lb">&#127800;</span>
-  <h1 class="lt">A place <em>kept for you</em></h1>
-  <p class="ls">Every memory we ever made.<br>Come inside.</p>
-  <div class="ldv"><div class="ldvl"></div><span style="font-size:11px;color:rgba(200,163,110,.55)">&#10023;</span><div class="ldvl"></div></div>
-  <div class="lf"><label>Who are you</label><input id="usr" type="text" placeholder="Abhi or Ganu" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('pwd').focus()"></div>
-  <div class="lf"><label>Our secret</label><input id="pwd" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <div class="le" id="lerr">That doesn't feel right.</div>
-  <button class="btn-l" id="lbtn" onclick="doLogin()">Step Inside &#10023;</button>
-  <p class="ln">built with love &middot; kept with care</p>
-</div></div>
+<div class="wrap">
+  <div class="card">
+    <span class="bloom">&#127800;</span>
+    <h1>A place <em>kept for you</em></h1>
+    <p>Every memory we ever made.<br>Come inside.</p>
+    <div class="divider"><div class="divider-line"></div><span style="font-size:11px;color:rgba(200,163,110,.55)">&#10023;</span><div class="divider-line"></div></div>
+    <div class="field"><label>Who are you</label><input id="usr" type="text" placeholder="Abhi or Ganu" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('pwd').focus()"></div>
+    <div class="field"><label>Our secret</label><input id="pwd" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="off" onkeydown="if(event.key==='Enter')go()"></div>
+    <div class="err" id="err">That doesn't feel right.</div>
+    <button class="btn" onclick="go()">Step Inside &#10023;</button>
+    <p class="note">built with love &middot; kept with care</p>
+  </div>
+</div>
+
 <script>
-for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(Math.random()*2+.4)+'px;height:'+(Math.random()*2+.4)+'px;--d:'+(2+Math.random()*4)+'s;--op:'+(Math.random()*.55+.08)+';animation-delay:'+(Math.random()*4)+'s';document.body.appendChild(s)}
-const PE=['&#127800;','&#127826;','&#127804;','&#10023;','&#127801;'];
-for(let i=0;i<14;i++){const p=document.createElement('div');p.className='pet';p.innerHTML=PE[Math.floor(Math.random()*PE.length)];p.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*12)+'px;animation-duration:'+(8+Math.random()*10)+'s;animation-delay:'+(Math.random()*8)+'s';document.body.appendChild(p)}
-function doLogin(){
+// Stars
+(function(){
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(Math.random()*2+.4)+'px;height:'+(Math.random()*2+.4)+'px;--d:'+(2+Math.random()*4)+'s;--op:'+(Math.random()*.5+.08)+';animation-delay:'+(Math.random()*4)+'s';
+    document.body.appendChild(s);
+  }
+  // Petals
+  ['&#127800;','&#127826;','&#127804;','&#10023;'].forEach(e=>{
+    for(let i=0;i<4;i++){
+      const p=document.createElement('div');
+      p.className='pet';p.innerHTML=e;
+      p.style.cssText='left:'+Math.random()*100+'%;--fs:'+(12+Math.random()*12)+'px;--dur:'+(9+Math.random()*9)+'s;--del:'+(Math.random()*8)+'s';
+      document.body.appendChild(p);
+    }
+  });
+})();
+
+function go(){
   const u=document.getElementById('usr').value.trim();
   const p=document.getElementById('pwd').value;
-  const err=document.getElementById('lerr');
-  err.classList.remove('show');
+  const e=document.getElementById('err');
+  e.classList.remove('show');
   if((u==='Abhi'||u==='Ganu')&&p==='1234'){
-    document.getElementById('lbtn').textContent='Opening the doors…';
-    localStorage.setItem('user',u);
-    db.from('presence').upsert({username:u,last_seen:Date.now(),is_online:true},{onConflict:'username'}).catch(()=>{});
-    location.href='home.html';
-  }else{
+    // Save to localStorage FIRST, then redirect
+    try{ localStorage.setItem('user',u); }catch(ex){}
+    // Verify it was saved
+    if(localStorage.getItem('user')===u){
+      window.location.href='home.html';
+    } else {
+      // localStorage blocked — use sessionStorage fallback
+      try{ sessionStorage.setItem('user',u); }catch(ex){}
+      window.location.href='home.html';
+    }
+  } else {
     document.getElementById('pwd').value='';
-    void err.offsetWidth;err.classList.add('show');
+    void e.offsetWidth;
+    e.classList.add('show');
   }
 }
 </script>
-</body></html>
+</body>
+</html>
